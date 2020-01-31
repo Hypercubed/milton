@@ -1,1 +1,2 @@
-export * from './lib/number';
+export * from './lib/milton';
+export * from './lib/plugins';
