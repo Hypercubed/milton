@@ -1,14 +1,13 @@
 import { Milton } from './milton';
 import {
   jsonCatch,
-  colorize,
   prettySetMap,
   prettyErrors,
   prettyRegex,
   prettyDates,
   maxArrayLength,
   maxDepth,
-  circular,
+  reference,
   skipPrivate,
   classes,
   jsonValues,
@@ -22,7 +21,9 @@ import {
   dates,
   errors,
   regexp,
-  setMap
+  setMap,
+  trimStrings,
+  promises
 } from './plugins';
 
 export function json(_: Milton) {
@@ -40,9 +41,9 @@ export function js(_: Milton) {
   _.add(arrayDecender);
   _.add(objectDecender);
   _.add(jsValues);
-  _.add(jsonValues);
+  _.add(jsonValues, { quote: `'` });
 
-  _.add(symbols);
+  _.add(symbols, { quote: `'` });
   _.add(dates);
   _.add(errors);
   _.add(regexp);
@@ -56,7 +57,7 @@ export function js(_: Milton) {
 }
 
 export function pretty(_: Milton) {
-  _.add(circular);
+  _.add(reference);
 
   _.add(arrayDecender);
   _.add(objectDecender, { quoteKeys: false, compact: false });
@@ -72,18 +73,13 @@ export function pretty(_: Milton) {
   _.add(prettyErrors);
   _.add(prettyRegex);
   _.add(prettySetMap);
+  _.add(promises);
 
-  _.add(maxArrayLength, { max: 80, show: 20 });
+  _.add(trimStrings);
+  _.add(maxArrayLength, { max: 20 });
   _.add(maxDepth);
   _.add(indent);
   _.add(breakLength, { compact: false });
-
-  return _;
-}
-
-export function prettyColors(_: Milton) {
-  _.use(pretty);
-  _.add(colorize);
 
   return _;
 }

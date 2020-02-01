@@ -2,9 +2,10 @@ import Chalk from 'chalk';
 
 // tslint:disable:no-expression-statement
 import { Milton } from './milton';
-import { colorize } from './plugins';
+import { ansiColors } from './plugins';
 import { json, js, pretty } from './presets';
 
+const longText = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent fermentum suscipit hendrerit. In elit urna, suscipit sed auctor et, maximus eget nibh. Duis sollicitudin odio nisi, eu eleifend nunc molestie non. Curabitur dignissim viverra ullamcorper. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Praesent faucibus at mauris sed lacinia. Morbi tincidunt purus non facilisis lobortis. Donec molestie massa eu lacus dictum eleifend. Suspendisse vel dolor laoreet diam congue hendrerit. Aenean sed luctus lacus, ultricies faucibus dolor.';
 const bigarray = Array.from({ length: 100 }).map((_k, i) => i * 1.1);
 
 class Foo {
@@ -29,7 +30,8 @@ const obj: any = {
         This
         is
         multiline
-      `
+      `,
+      longText
     },
     arrays: {
       empty: [],
@@ -105,6 +107,7 @@ describe('json', () => {
   test('jsonValues', () => {
     expect(milton.stringify('')).toBe(`""`);
     expect(milton.stringify('Hello')).toBe(`"Hello"`);
+    expect(milton.stringify(longText)).toBe(`"${longText}"`);
     expect(milton.stringify(3.14)).toBe(`3.14`);
     expect(milton.stringify(true)).toBe(`true`);
     expect(milton.stringify(false)).toBe(`false`);
@@ -179,22 +182,30 @@ describe('js objects', () => {
   milton.use(js);
 
   test('jsonValues', () => {
-    expect(milton.stringify('')).toBe(`""`);
-    expect(milton.stringify('Hello')).toBe(`"Hello"`);
+    expect(milton.stringify('')).toBe(`''`);
+    expect(milton.stringify('Hello')).toBe(`'Hello'`);
+    expect(milton.stringify(longText)).toBe(`'${longText}'`);
     expect(milton.stringify(3.14)).toBe(`3.14`);
     expect(milton.stringify(true)).toBe(`true`);
     expect(milton.stringify(false)).toBe(`false`);
     expect(milton.stringify(null)).toBe(`null`);
   });
 
+  test('jsValues', () => {
+    expect(milton.stringify(undefined)).toBe(`undefined`);
+    expect(milton.stringify(NaN)).toBe(`NaN`);
+    expect(milton.stringify(Infinity)).toBe(`Infinity`);
+    expect(milton.stringify(-Infinity)).toBe(`-Infinity`);
+    expect(milton.stringify(-0)).toBe(`-0`);
+    expect(milton.stringify(123n)).toBe(`123n`);
+    expect(milton.stringify(-100000000000000005n)).toBe(`-100000000000000005n`);
+    expect(milton.stringify(BigInt('-100000000000000006'))).toBe(`-100000000000000006n`);
+  });
+
   test('arrays', () => {
     expect(milton.stringify([])).toBe(JSON.stringify([], undefined, 2));
-    expect(milton.stringify(['Hello', 3.14])).toBe(
-      JSON.stringify(['Hello', 3.14])
-    );
-    expect(milton.stringify([['Hello'], 3.14])).toBe(
-      JSON.stringify([['Hello'], 3.14])
-    );
+    expect(milton.stringify(['Hello', 3.14])).toBe(`['Hello',3.14]`);
+    expect(milton.stringify([['Hello'], 3.14])).toBe(`[['Hello'],3.14]`);
 
     expect(milton.stringify(bigarray)).toBe(
       JSON.stringify(bigarray, undefined, 2)
@@ -214,23 +225,14 @@ describe('js objects', () => {
     );
   });
 
-  test('jsValues', () => {
-    expect(milton.stringify(undefined)).toBe(`undefined`);
-    expect(milton.stringify(NaN)).toBe(`NaN`);
-    expect(milton.stringify(Infinity)).toBe(`Infinity`);
-    expect(milton.stringify(-Infinity)).toBe(`-Infinity`);
-    expect(milton.stringify(-0)).toBe(`-0`);
-    // expect(milton.stringify(123n)).toBe(`123n`);
-  });
-
   test('js objects', () => {
     expect(milton.stringify(new Date('1995-12-17T03:24:00'))).toBe(
-      `new Date("1995-12-17T10:24:00.000Z")`
+      `new Date('1995-12-17T10:24:00.000Z')`
     );
-    expect(milton.stringify(/\.*/g)).toBe(`new RegExp("\\\\.*", "g")`);
-    expect(milton.stringify(Symbol('Milton'))).toBe(`Symbol("Milton")`);
+    expect(milton.stringify(/\.*/g)).toBe(`new RegExp('\\\\.*', 'g')`);
+    expect(milton.stringify(Symbol('Milton'))).toBe(`Symbol('Milton')`);
     // expect(milton.stringify(function yes() { return true; })).toBe(`[ƒ: yes]`);
-    expect(milton.stringify(new Error('bad'))).toBe(`new Error("bad")`);
+    expect(milton.stringify(new Error('bad'))).toBe(`new Error('bad')`);
     expect(milton.stringify(new Set([1, 2, 3]))).toBe(`new Set([1,2,3])`);
     expect(
       milton.stringify(
@@ -239,7 +241,7 @@ describe('js objects', () => {
           ['key2', 'value2']
         ])
       )
-    ).toBe(`new Map([["key1","value1"],["key2","value2"]])`);
+    ).toBe(`new Map([['key1','value1'],['key2','value2']])`);
   });
 
   test('long arrays', () => {
@@ -260,10 +262,22 @@ describe('pretty', () => {
   test('jsonValues', () => {
     expect(milton.stringify('')).toBe(`""`);
     expect(milton.stringify('Hello')).toBe(`"Hello"`);
+    expect(milton.stringify(longText)).toBe(`"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent fer ... us dolor."`);
     expect(milton.stringify(3.14)).toBe(`3.14`);
     expect(milton.stringify(true)).toBe(`true`);
     expect(milton.stringify(false)).toBe(`false`);
     expect(milton.stringify(null)).toBe(`null`);
+  });
+
+  test('jsValues', () => {
+    expect(milton.stringify(undefined)).toBe(`undefined`);
+    expect(milton.stringify(NaN)).toBe(`NaN`);
+    expect(milton.stringify(Infinity)).toBe(`Infinity`);
+    expect(milton.stringify(-Infinity)).toBe(`-Infinity`);
+    expect(milton.stringify(-0)).toBe(`-0`);
+    expect(milton.stringify(123n)).toBe(`123n`);
+    expect(milton.stringify(-100000000000000005n)).toBe(`-100000000000000005n`);
+    expect(milton.stringify(BigInt('-100000000000000006'))).toBe(`-100000000000000006n`);
   });
 
   test('arrays', () => {
@@ -287,7 +301,7 @@ describe('pretty', () => {
     };
     b.a.a = b.a;
 
-    expect(milton.stringify(b)).toBe(`{ a: { a: [Circular a] } }`);
+    expect(milton.stringify(b)).toBe(`{ a: { a: [Reference #/a] } }`);
   });
 
   test('js objects', () => {
@@ -302,7 +316,7 @@ describe('pretty', () => {
       })
     ).toBe(`[ƒ yes]`);
     expect(milton.stringify(new Error('bad'))).toBe(`Error: bad`);
-    expect(milton.stringify(new Set([1, 2, 3]))).toBe(`Set(3) { 1, 2, 3 }`); // Set(3) { 1, 2, 3 }
+    expect(milton.stringify(new Set([1, 2, 3]))).toBe(`Set(3) { 1, 2, 3 }`);
     expect(
       milton.stringify(
         new Map([
@@ -310,7 +324,16 @@ describe('pretty', () => {
           ['key2', 'value2']
         ])
       )
-    ).toBe(`Map(2) { key1 => "value1", key2 => "value2" }`); // Map(2) {"key1" => "value1", "key2" => "value2"}
+    ).toBe(`Map(2) { key1 => "value1", key2 => "value2" }`);
+  });
+
+  test('weak', () => {
+    expect(milton.stringify(new WeakSet([{}, {}, {}]))).toBe(`WeakSet {}`);
+    expect(milton.stringify(new WeakMap([[{}, {}], [{}, {}]]))).toBe(`WeakMap {}`);
+  });
+
+  test('Promises', () => {
+    expect(milton.stringify(Promise.resolve('Hello'))).toBe(`Promise { ? }`);
   });
 
   test('classes and instances', () => {
@@ -346,15 +369,27 @@ describe('pretty', () => {
 describe('prettyColors', () => {
   const milton = new Milton();
   milton.use(pretty);
-  milton.add(colorize);
+  milton.add(ansiColors);
 
   test('jsonValues', () => {
     expect(milton.stringify('')).toBe(Chalk.yellow(`""`));
     expect(milton.stringify('Hello')).toBe(Chalk.yellow(`"Hello"`));
+    expect(milton.stringify(longText)).toBe(Chalk.yellow(`"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent fer ... us dolor."`));
     expect(milton.stringify(3.14)).toBe(Chalk.bold.blue(`3.14`));
     expect(milton.stringify(true)).toBe(Chalk.bold.red(`true`));
     expect(milton.stringify(false)).toBe(Chalk.bold.red(`false`));
     expect(milton.stringify(null)).toBe(Chalk.bold.red(`null`));
+  });
+
+  test('jsValues', () => {
+    expect(milton.stringify(undefined)).toBe(Chalk.inverse.red(`undefined`));
+    expect(milton.stringify(NaN)).toBe(Chalk.bold.blue(`NaN`));
+    expect(milton.stringify(Infinity)).toBe(Chalk.bold.blue(`Infinity`));
+    expect(milton.stringify(-Infinity)).toBe(Chalk.bold.blue(`-Infinity`));
+    expect(milton.stringify(-0)).toBe(Chalk.bold.blue(`-0`));
+    expect(milton.stringify(123n)).toBe(Chalk.bold.blue(`123n`));
+    expect(milton.stringify(-100000000000000005n)).toBe(Chalk.bold.blue(`-100000000000000005n`));
+    expect(milton.stringify(BigInt('-100000000000000006'))).toBe(Chalk.bold.blue(`-100000000000000006n`));
   });
 
   test('js objects', () => {
@@ -373,6 +408,10 @@ describe('prettyColors', () => {
     expect(milton.stringify(new Error('bad'))).toBe(Chalk.red(`Error: bad`));
     // expect(milton.stringify(new Set([1, 2, 3]))).toBe(Chalk.bold.white(`Set(3) [ 1, 2, 3 ]`));  // Set(3) { 1, 2, 3 }
     // expect(milton.stringify(new Map([['key1', 'value1'], ['key2', 'value2']]))).toBe(Chalk.bold.white(`Map(2) [ [ "key1", "value1" ], [ "key2", "value2" ] ]`));  // Map(2) {"key1" => "value1", "key2" => "value2"}
+  });
+
+  test('Promises', () => {
+    expect(milton.stringify(Promise.resolve('Hello'))).toBe(Chalk.italic.white(`Promise { ? }`));
   });
 
   test('snapshot', () => {

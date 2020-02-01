@@ -1,6 +1,6 @@
 {
-  "name": "milton",
-  "version": "1.0.0",
+  "name": "@hypercubed/milton",
+  "version": "0.0.0",
   "description": "Now Milton, don't be greedy; let's pass it along and make sure everyone gets a piece",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
@@ -43,7 +43,9 @@
     "node": ">=8.9"
   },
   "dependencies": {
-    "chalk": "^3.0.0"
+    "@types/json-pointer": "^1.0.30",
+    "chalk": "^3.0.0",
+    "json-pointer": "^0.6.0"
   },
   "devDependencies": {
     "@bitjson/npm-scripts-info": "^1.0.0",

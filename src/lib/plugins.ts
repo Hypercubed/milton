@@ -1,5 +1,7 @@
-import { Class, Path, StringifyFunction } from './milton.d';
+import jsonpointer from 'json-pointer';
 import Chalk from 'chalk';
+
+import { Class, Path, StringifyFunction } from './milton.d';
 
 const { toString } = Object.prototype;
 
@@ -32,12 +34,33 @@ function escape(s: string) {
   });
 }
 
+function quotes(s: boolean | string) {
+  if (s === true) return `'`;
+  if (s === false) return '';
+  if (s === 'single') return `'`;
+  if (s === 'double') return `"`;
+  return s;
+}
+
+function indentOption(s: boolean | string | number) {
+  if (s === true) return `  `;
+  if (s === false) return '';
+  if (typeof s === 'number') return ` `.repeat(s);
+  return s;
+}
+
+// PLUGINS
+
 const JSON_OPTIONS = {
-  quote: '"'
+  quote: '"' as string | boolean
 };
 
+/**
+ * Process accepted JSON values
+ */
 export const jsonValues = (options: typeof JSON_OPTIONS) => {
   options = { ...JSON_OPTIONS, ...options };
+  options.quote = quotes(options.quote);
   return (s: any, _p: Path, value: any) => {
     const t = typeof s;
     if (s === null || t === 'number' || t === 'boolean') {
@@ -49,8 +72,12 @@ export const jsonValues = (options: typeof JSON_OPTIONS) => {
   };
 };
 
+/**
+ * Process unaccepted JSON values
+ */
 export const jsonCatch = (options: typeof JSON_OPTIONS) => {
   options = { ...JSON_OPTIONS, ...options };
+  options.quote = quotes(options.quote);
   return (s: any) => {
     const t = typeof s;
     if (s instanceof Date) {
@@ -119,6 +146,7 @@ export const objectDecender = (
   get: StringifyFunction
 ) => {
   options = { ...OBJECT_DECENDER_OPTIONS, ...options };
+  options.quote = quotes(options.quote);
 
   const seen: any[] = [];
   return (s: any, path: Path) => {
@@ -135,7 +163,7 @@ export const objectDecender = (
           const v = get(s[key], path.concat([key]));
           key = String(key);
           const esc = escape(String(key));
-          key = esc !== key || options.quoteKeys ? `"${esc}"` : key;
+          key = esc !== key || options.quoteKeys ? `${options.quote}${esc}${options.quote}` : key;
           if (v) acc.push(key + (options.compact ? ':' : ': ') + v);
         }
       }
@@ -153,13 +181,12 @@ export const objectDecender = (
 };
 
 const INDENT_OPTIONS = {
-  indent: '  ' as string | number
+  indent: '  ' as string | number | boolean
 };
 
 export const indent = (options: typeof INDENT_OPTIONS) => (s: any) => {
   options = { ...INDENT_OPTIONS, ...options };
-  if (typeof options.indent === 'number')
-    options.indent = ' '.repeat(options.indent);
+  options.indent = indentOption(options.indent);
   if (typeof s === 'string') {
     return s
       .split('\n')
@@ -176,36 +203,44 @@ const BREAK_OPTIONS = {
   breakLength: 80
 };
 
-export const breakLength = (options: typeof BREAK_OPTIONS) => (s: any) => {
+export const breakLength = (options: typeof BREAK_OPTIONS) => {
   options = { ...BREAK_OPTIONS, ...options };
+  return (s: any) => {
+    if (typeof s === 'string') {
+      const oneline = s.replace(/\n\s*/g, options.compact ? '' : ' ');
 
-  if (typeof s === 'string') {
-    const oneline = s.replace(/\n\s*/g, options.compact ? '' : ' ');
-
-    return oneline.length < options.breakLength ? oneline : s;
-  }
-  return s;
+      return oneline.length < options.breakLength ? oneline : s;
+    }
+    return s;
+  };
 };
 
+/**
+ * Process other JS values
+ */
 export const jsValues = () => (s: any) => {
   if (s === void 0) return String(s);
-  if (typeof s === 'number' && !isFinite(s)) {
-    // +/- Infinity or NaN
-    return String(s);
+  switch (typeof s) {
+    case 'number':
+      if (!isFinite(s)) return String(s);
+      if (s === 0 && 1 / s < 0) return '-0';
+      break;
+    case 'bigint':
+      return String(s) + 'n';
   }
-  if (s === 0 && 1 / s < 0) return '-0';
   return s;
 };
 
 const SYMBOLS_OPTIONS = {
-  quote: true
+  quote: `"` as string | boolean
 };
 
 export const symbols = (options: typeof SYMBOLS_OPTIONS) => (s: any) => {
   options = { ...SYMBOLS_OPTIONS, ...options };
+  options.quote = quotes(options.quote);
   if (typeof s === 'symbol') {
     const esc = escape((s as any).description);
-    return options.quote ? `Symbol("${esc}")` : `Symbol(${esc})`;
+    return `Symbol(${options.quote}${esc}${options.quote})`;
   }
   return s;
 };
@@ -277,7 +312,7 @@ export const setMap = (_options: any, _root: any, g: any) => (
 };
 
 const SET_MAP_OPTIONS = {
-  quoteKeys: false
+  quote: false as boolean | string
 };
 
 // Compact option, quote keys?
@@ -287,23 +322,27 @@ export const prettySetMap = (
   g: any
 ) => {
   options = { ...SET_MAP_OPTIONS, ...options };
+  options.quote = quotes(options.quote);
   return (s: any, p: Path) => {
     if (s instanceof Map) {
       const arr = Array.from(s)
         .map(([key, v], i) => {
           key = String(key);
           const esc = escape(String(key));
-          key = esc !== key || options.quoteKeys ? `"${esc}"` : key;
+          key = esc !== key || options.quote ? `${options.quote}${esc}${options.quote}` : key;
           return `${key} => ` + g(v, p.concat([i]));
         })
         .join(', ');
       return `Map(${s.size}) { ${arr} }`;
-    }
-    if (s instanceof Set) {
+    } else if (s instanceof Set) {
       const arr = Array.from(s)
         .map((x, i) => g(x, p.concat([i])))
         .join(', ');
       return `Set(${s.size}) { ${arr} }`;
+    } else if (s instanceof WeakMap) {
+      return `WeakMap {}`;
+    } else if (s instanceof WeakSet) {
+      return `WeakSet {}`;
     }
     return s;
   };
@@ -324,6 +363,13 @@ export const classes = () => (s: any, _p: Path, v: any) => {
   return s;
 };
 
+export const promises = () => (s: any, _p: Path, v: any) => {
+  if (toString.call(v) === '[object Promise]') {
+    return 'Promise { ? }';
+  }
+  return s;
+};
+
 const PRIVATE_OPTIONS = {
   prefix: '_'
 };
@@ -339,21 +385,15 @@ export const skipPrivate = (options: typeof PRIVATE_OPTIONS) => {
   };
 };
 
-export const circular = () => {
+export const reference = () => {
   const repeated = new WeakMap();
   return (s: any, path: Path) => {
-    const t = toString.call(s);
-    if (
-      t === '[object Array]' ||
-      t === '[object Object]' ||
-      t === '[object Map]' ||
-      t === '[object Set]'
-    ) {
+    if (s !== null && typeof s === 'object') {
       if (repeated.has(s)) {
-        const p = repeated.get(s);
-        return `[Circular ${p}]`;
+        const p = jsonpointer.compile(repeated.get(s));
+        return `[Reference #${p}]`;
       }
-      repeated.set(s, path.join('.'));
+      repeated.set(s, path);
     }
     return s;
   };
@@ -363,6 +403,7 @@ export const COLORIZE_OPTIONS = {
   undefined: 'red.inverse',
   boolean: 'red.bold',
   number: 'blue.bold',
+  bigint: 'blue.bold',
   string: 'yellow',
   symbol: 'magenta.bold',
   function: 'cyan',
@@ -371,10 +412,11 @@ export const COLORIZE_OPTIONS = {
   Error: 'red',
   RegExp: 'magenta',
   Date: 'green',
-  Object: 'white.bold'
+  Object: 'white.bold',
+  Promise: 'white.italic'
 };
 
-export const colorize = (colors: typeof COLORIZE_OPTIONS) => (
+export const ansiColors = (colors: typeof COLORIZE_OPTIONS) => (
   s: any,
   _p: Path,
   v: any
@@ -421,7 +463,7 @@ export const maxDepth = (options: typeof DEPTH_OPTIONS) => {
 
 const MAX_ARRAY_OPTIONS = {
   max: 100,
-  show: 100
+  show: null as any
 };
 
 // Typed arrays, sets
@@ -439,6 +481,37 @@ export const maxArrayLength = (options: typeof MAX_ARRAY_OPTIONS) => {
         const ll = l ? l.split(/\S/)[0] : '';
         s = `${f}\n${ll}...\n${e}`;
       }
+    }
+    return s;
+  };
+};
+
+// TODO: https://github.com/Rich-Harris/devalue/blob/master/src/index.ts#L4
+export const blockXSS = () => {
+  return (s: any) => {
+    if (typeof s === 'string') {
+      return s.replace(/\u2028/g, '\\u2028')
+      .replace(/\u2029/g, '\\u2029')
+      .replace(/</g, '\\u003C')
+      .replace(/>/g, '\\u003E')
+      .replace(/\//g, '\\u002F');
+    }
+    return s;
+  };
+};
+
+const TRIM_STRING_OPTIONS = {
+  max: 80,
+  show: [70, 10],
+  snip: ' ... '
+};
+
+export const trimStrings = (options: typeof TRIM_STRING_OPTIONS) => {
+  options = { ...TRIM_STRING_OPTIONS, ...options };
+  options.show = options.show || options.max;
+  return (s: any, _p: Path, v: any) => {
+    if (typeof v === 'string' && typeof s === 'string' && s.length > options.max) {
+      return s.slice(0, options.show[0]) + options.snip + s.slice(-options.show[1]);
     }
     return s;
   };

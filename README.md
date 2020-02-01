@@ -26,7 +26,7 @@ npm i @hypercubed/milton
 ## Usage
 
 ```js
-import { Milton, pretty, colorize } from '@hypercubed/milton';
+import { Milton, pretty, ansiColors } from '@hypercubed/milton';
 
 const milton = new Milton();
 milton.use(pretty);
@@ -118,10 +118,10 @@ prints:
 }
 ```
 
-add the `colorize` plugin:
+add the `ansiColors` plugin:
 
 ```js
-milton.add(colorize);
+milton.add(ansiColors);
 
 const colorized = milton.stringify(obj);
 console.log(colorized);
@@ -135,26 +135,36 @@ will print:
 
 `Milton` is an interface for processing JS objects.  In `Milton` we have a concept of plugins and presets. Plugins are functions that define a "replacer" functions.  Replacer functions accept each value and returns a stringified result.  The value returned by the replacer function replaces the original value in the stringified result. If it returns `undefined` the property will be removed. If it returns the existing value it will be unchanged.  Values returned from one replacer are passed down to the next.  Plugins are added using the `.add` method on a `Milton` instance.  The order of the plugins does matter.  Plugins that stringify values should come first, followed by plugins that format the results.
 
+Presets are ordered sets of plugins.  You may use a preset using the `.use` method on a milton instance. 
+
 ```ascii
 | ........................ stringify ........................... |
+        | ... plugin ... |
+        | .................... preset ................... |
 
-          +----------+    +----------+    +----------+
-Input  -> | Replacer | -> | Replacer | -> | Replacer | -> Output
-          +----------+    +----------+    +----------+
+           +----------+     +----------+     +----------+
+Input  --> | Replacer | --> | Replacer | --> | Replacer | --> Output
+           +----------+     +----------+     +----------+
 
 ```
 
-Presets are sets of plugins.  You may use a preset using the `.use` method on a milton instance.
+Presets and plugins may be used together:
+
+```js
+milton.add(reference);
+miltion.use(json);
+milton.add(ansiColors);
+```
 
 ## Presets
 
-- `json` - Reproduces, as much as possible, the built in `JSON.stringify`.
-- `js` - Extends the `json` plugin to support addition types, printed as JS compatible code (e.g. `new Date("1995-12-17T10:24:00.000Z")`)
-- `pretty` - Pretty prints objects and values, similar to the browser's console output or node's `util.inspect`.
+- `json` - Produces valid JSON; reproducing, as much as possible, the built-in `JSON.stringify`.
+- `js` - Produces valid JS; supports additional types, printed as JS compatible code (e.g. `new Date("1995-12-17T10:24:00.000Z")`)
+- `pretty` - Pretty prints objects and values, similar to the browser's console output or node's `util.inspect`.  Output is neither valid JSON nor JS.
 
 ## Plugins
 
-- `colorize` - Colorizes output based on types.
+- `ansiColors` - Colorizes output based on types.
 
 ## API
 
