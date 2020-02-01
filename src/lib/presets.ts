@@ -66,7 +66,7 @@ export function pretty(_: Milton) {
   _.add(classes);
   _.add(skipPrivate);
   _.add(jsValues);
-  _.add(jsonValues);
+  _.add(jsonValues, { quote: `'` });
 
   _.add(symbols, { quote: false });
   _.add(prettyDates);

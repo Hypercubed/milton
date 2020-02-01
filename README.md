@@ -6,16 +6,15 @@
 
 ## Goals
 
-Milton is a a extendable tool to stringify JS objects.  Co-worker of [Smykowski](https://github.com/Hypercubed/smykowski).
+Milton is JavaScript object stringifier powered by plugins.  Co-worker of [Smykowski](https://github.com/Hypercubed/smykowski).
 
-## Features (see [Extension](#extension) below)
+## Features
 
-- ANSI colorized output
-- Cyclical objects/arrays
-- Additional types (`undefined`, `±Infinity`, `NaN`, `-0`)
+- Extendable
+- Types (`undefined`, `±Infinity`, `NaN`, `-0`)
 - Objects (`RegExp`, `Date`, `Map` and `Set`)
 - Classes and class instances
-- Extendable
+- ANSI colorized output
 
 ## Install
 
@@ -32,41 +31,39 @@ const milton = new Milton();
 milton.use(pretty);
 
 const obj = {
-  json: {
-    null: null,
-    integer: 1580349408812,
-    float: 0.4852754432812123,
-    strings: {
-      empty: '',
-      string: 'foo',
-      multiline: `
-        This
-        is
-        multiline
-      `
-    },
-    arrays: {
-      empty: [],
-      array: [ 'one', 'two', 'three' ],
-    },
-    nested: { hello: 'hapi' },
-    booleans: {
-      false: false,
-      true: true
-    }
+  null: null,
+  numbers: [
+    3.14159,
+    NaN,
+    Infinity,
+    -Infinity,
+    -0,
+    -10000000000000006n
+  ],
+  strings: {
+    empty: '',
+    string: 'foo',
+    multiline: `
+    This
+    is
+    multiline
+    `
   },
-  otherTypes: {
-    undef: undefined,
-    error: new Error('bad'),
-    regexp: /.*\n/g,
-    symbol: Symbol('Waddams'),
-    function: function Yes() { /* noop */ },
-    map: new Map([['key1', 'value1'], ['key2', 'value2']]),
-    set: new Set([1, 2, 3]),
-    date: new Date('1995-12-17T03:24:00'),
-    numbers: [NaN, Infinity, -Infinity, -0],
-    void: void 0
+  arrays: {
+    empty: [],
+    array: [ 'one', 'two', 'three' ]
   },
+  nested: { hello: 'hapi' },
+  false: false,
+  true: true,
+  undef: undefined,
+  error: new Error('bad'),
+  regexp: /.*\n/g,
+  symbol: Symbol('Waddams'),
+  function: function Yes() { /* noop */ },
+  map: new Map([['key1', 'value1'], ['key2', 'value2']]),
+  set: new Set([1, 2, 3]),
+  date: new Date('1995-12-17T03:24:00'),
   objects: {
     class: Milton,
     instance: milton
@@ -81,39 +78,25 @@ prints:
 
 ```
 {
-  json: {
-    null: null,
-    integer: 1580349408812,
-    float: 0.4852754432812123,
-    strings: {
-      empty: "",
-      string: "foo",
-      multiline: "\n        This\n        is\n        multiline\n      "
-    },
-    arrays: { empty: [ ], array: [ "one", "two", "three" ] },
-    nested: { hello: "hapi" },
-    booleans: { false: false, true: true }
+  null: null,
+  numbers: [ 3.14159, NaN, Infinity, -Infinity, -0, -10000000000000006n ],
+  strings: {
+    empty: '',
+    string: 'foo',
+    multiline: '\n    This\n    is\n    multiline\n    '
   },
-  otherTypes: {
-    undef: undefined,
-    error: Error: bad,
-    regexp: /.*\n/g,
-    symbol: Symbol(Waddams),
-    function: [ƒ: Yes],
-    map: Map(2) [
-        [ "key1", "value1" ],
-        [ "key2", "value2" ]
-    ],
-    set: Set(3) [ 1, 2, 3 ],
-    date: Sun Dec 17 1995 03:24:00 GMT-0700 (Mountain Standard Time),
-    numbers: [
-      NaN,
-      Infinity,
-      -Infinity,
-      -0
-    ],
-    void: undefined
-  },
+  arrays: { empty: [ ], array: [ 'one', 'two', 'three' ] },
+  nested: { hello: 'hapi' },
+  false: false,
+  true: true,
+  undef: undefined,
+  error: Error: bad,
+  regexp: /.*\n/g,
+  symbol: Symbol(Waddams),
+  function: [ƒ Yes],
+  map: Map(2) { key1 => 'value1', key2 => 'value2' },
+  set: Set(3) { 1, 2, 3 },
+  date: Sun Dec 17 1995 03:24:00 GMT-0700 (Mountain Standard Time),
   objects: { class: [class: Milton], instance: Milton { } }
 }
 ```
@@ -139,8 +122,8 @@ Presets are ordered sets of plugins.  You may use a preset using the `.use` meth
 
 ```ascii
 | ........................ stringify ........................... |
-        | ... plugin ... |
         | .................... preset ................... |
+        | ... plugin ... |
 
            +----------+     +----------+     +----------+
 Input  --> | Replacer | --> | Replacer | --> | Replacer | --> Output
@@ -150,7 +133,7 @@ Input  --> | Replacer | --> | Replacer | --> | Replacer | --> Output
 
 Presets and plugins may be used together:
 
-```js
+```ts
 milton.add(reference);
 miltion.use(json);
 milton.add(ansiColors);
@@ -159,12 +142,55 @@ milton.add(ansiColors);
 ## Presets
 
 - `json` - Produces valid JSON; reproducing, as much as possible, the built-in `JSON.stringify`.
-- `js` - Produces valid JS; supports additional types, printed as JS compatible code (e.g. `new Date("1995-12-17T10:24:00.000Z")`)
-- `pretty` - Pretty prints objects and values, similar to the browser's console output or node's `util.inspect`.  Output is neither valid JSON nor JS.
+- `js` - Produces valid JS with support for additional types, printed as JS compatible code (for example `new Date("1995-12-17T10:24:00.000Z")`)
+- `pretty` - Pretty prints objects and values, similar to the browser's console output or node's `util.inspect`.  Output is neither valid JSON nor valid JS.
+
+(see [presets.ts](https://github.com/Hypercubed/milton/blob/master/src/lib/presets.ts) for implementation details)
 
 ## Plugins
 
+- `reference` - Prints repeated objects as reference pointers
 - `ansiColors` - Colorizes output based on types.
+
+(see [plugins.ts](https://github.com/Hypercubed/milton/blob/master/src/lib/plugins.ts) for more)
+
+## Writing Plugins and Presets
+
+A plugin is a function that accepts an options object, the root value (the first value passed to the `Miltion#stringify` method), and a "get" function used for recursion.  The plugin should return a replacer function that is called (recursively) on each value in the object.
+
+For example here is very simple plugin that will handle a hypothetical `Decimal` class:
+
+```ts
+const decimalPlugin = () => (s: any) => {
+  if (s instanceof Decimal) {
+    return s.toFloat();
+  }
+  return s;
+};
+```
+
+It is importrant that the replacer function return the input value if it is unaltered.
+
+(see [plugins.ts](https://github.com/Hypercubed/milton/blob/master/src/lib/plugins.ts) for more)
+
+Presets are functions that add plugins to a `Milton` instance in a desiered order.  For example:
+
+```ts
+function myPrettyPrint(_: Milton) {
+  _.add(reference);
+
+  _.add(arrayDecender);
+  _.add(objectDecender, { quoteKeys: false, compact: true });
+
+  _.add(decimalPlugin);
+  _.add(jsValues);
+  _.add(jsonValues, { quote: `'` });
+
+  _.add(maxDepth);
+  _.add(indent);
+  return _;
+}
+```
 
 ## API
 
@@ -201,15 +227,11 @@ Pass the value throuhgt the added replacers.
 
 ### `Replacer`
 
-`function replacer(s, p, v)`
-
 ```ts
-type Replacer = (s: unknown, p: Path, value: unknown) => unknown | string;
+type Replacer = (s: any, p: Path, value: any) => unknown | string;
 ```
 
 ### `Plugin`
-
-`function plugin(options, root, get)`
 
 ```ts
 type Plugin = (options: any, root: any, get: StringifyFunction) => Replacer;
@@ -217,15 +239,10 @@ type Plugin = (options: any, root: any, get: StringifyFunction) => Replacer;
 
 ### `Preset`
 
-`function preset(milton)`
-
 ```ts
 type Preset = (milton: Milton) => Milton;
 ```
 
-## Writing Plugins and Presets
-
-TBD
 
 ## License
 
