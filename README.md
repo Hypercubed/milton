@@ -228,7 +228,7 @@ Pass the value throuhgt the added replacers.
 ### `Replacer`
 
 ```ts
-type Replacer = (s: any, p: Path, value: any) => unknown | string;
+type Replacer = (s: any, p: Path, value: any) => any ;
 ```
 
 ### `Plugin`
