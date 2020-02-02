@@ -26,7 +26,8 @@ import {
   regexp,
   setMap,
   trimStrings,
-  promises
+  promises,
+  objectToString
 } from './plugins';
 
 export function json(_: Milton) {
@@ -67,6 +68,7 @@ export function pretty(_: Milton) {
 
   _.add(functions);
   _.add(classes);
+  _.add(objectToString);
   _.add(skipPrivate);
   _.add(jsValues);
   _.add(jsonValues, { quote: `'` });

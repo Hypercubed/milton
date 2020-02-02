@@ -551,3 +551,12 @@ export const trimStrings = (_options: Partial<typeof TRIM_STRING_OPTIONS>) => {
   };
 };
 
+export const objectToString = () => (s: any, _p: Path, v: any) => {
+  const t = toString.call(v);
+  if (t === '[object Object]' && v.toString) {
+    const vt = v.toString();
+    if (vt !== t) return vt;
+  }
+  return s;
+};
+

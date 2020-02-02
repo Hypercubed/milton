@@ -17,7 +17,20 @@ class Foo {
   }
 }
 
-const a = new Foo('Hello', 'World');
+class Bar {
+  constructor(public value: string, private _value: string) {}
+
+  get() {
+    return this._value;
+  }
+
+  toString() {
+    return this._value;
+  }
+}
+
+const foo = new Foo('Hello', 'World');
+const bar = new Bar('Hello', 'World');
 
 const obj: any = {
   json: {
@@ -68,8 +81,9 @@ const obj: any = {
     // promise: Promise.resolve(123)
   },
   objects: {
-    class: Foo,
-    instance: a
+    Foo,
+    foo,
+    bar
     // circ: circularObj,
     // circArr: circularArr
   },
@@ -352,7 +366,8 @@ describe('pretty', () => {
 
   test('classes and instances', () => {
     expect(milton.stringify(Foo)).toBe(`[class: Foo]`);
-    expect(milton.stringify(a)).toBe(`Foo { value: 'Hello' }`);
+    expect(milton.stringify(foo)).toBe(`Foo { value: 'Hello' }`);
+    expect(milton.stringify(bar)).toBe(`World`);
   });
 
   test('more and depth', () => {

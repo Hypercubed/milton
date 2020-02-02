@@ -132,7 +132,10 @@ exports[`js objects snapshot 1`] = `
     \\"numbers\\":[NaN,Infinity,-Infinity,-0],
     \\"void\\":undefined
   },
-  \\"objects\\":{\\"instance\\":{\\"value\\":'Hello',\\"_value\\":'World'}},
+  \\"objects\\":{
+    \\"foo\\":{\\"value\\":'Hello',\\"_value\\":'World'},
+    \\"bar\\":{\\"value\\":'Hello',\\"_value\\":'World'}
+  },
   \\"deep\\":{\\"a\\":{\\"b\\":{\\"c\\":{\\"d\\":{\\"e\\":[{\\"f\\":[]}]}}}}},
   \\"weird\\":{\\"a\\\\t\\\\n\\\\n\\\\tb\\":'value'}
 }"
@@ -267,7 +270,10 @@ exports[`json snapshot 1`] = `
     \\"date\\":\\"1995-12-17T10:24:00.000Z\\",
     \\"numbers\\":[NaN,Infinity,-Infinity,0]
   },
-  \\"objects\\":{\\"instance\\":{\\"value\\":\\"Hello\\",\\"_value\\":\\"World\\"}},
+  \\"objects\\":{
+    \\"foo\\":{\\"value\\":\\"Hello\\",\\"_value\\":\\"World\\"},
+    \\"bar\\":{\\"value\\":\\"Hello\\",\\"_value\\":\\"World\\"}
+  },
   \\"deep\\":{\\"a\\":{\\"b\\":{\\"c\\":{\\"d\\":{\\"e\\":[{\\"f\\":[]}]}}}}},
   \\"weird\\":{\\"a\\\\t\\\\n\\\\n\\\\tb\\":\\"value\\"}
 }"
@@ -326,7 +332,7 @@ exports[`pretty snapshot 1`] = `
     numbers: [ NaN, Infinity, -Infinity, -0 ],
     void: undefined
   },
-  objects: { class: [class: Foo], instance: Foo { value: 'Hello' } },
+  objects: { Foo: [class: Foo], foo: Foo { value: 'Hello' }, bar: World },
   deep: { a: { b: { c: {...} } } },
   weird: { \\"a\\\\t\\\\n\\\\n\\\\tb\\": 'value' }
 }"
@@ -385,7 +391,7 @@ exports[`prettyColors snapshot 1`] = `
 [1m[37m  [1m[37m  numbers: [ [1m[34mNaN[39m[37m[37m[22m[1m[1m, [1m[34mInfinity[39m[37m[37m[22m[1m[1m, [1m[34m-Infinity[39m[37m[37m[22m[1m[1m, [1m[34m-0[39m[37m[37m[22m[1m[1m ],[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m  void: [7m[31mundefined[39m[37m[37m[27m[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m}[39m[37m[22m[1m,[39m[22m
-[1m[37m  objects: [1m[37m{ class: [36m[class: Foo][39m[37m[37m, instance: Foo { value: [33m'Hello'[39m[37m[37m } }[39m[37m[22m[1m,[39m[22m
+[1m[37m  objects: [1m[37m{ Foo: [36m[class: Foo][39m[37m[37m, foo: Foo { value: [33m'Hello'[39m[37m[37m }, bar: World }[39m[37m[22m[1m,[39m[22m
 [1m[37m  deep: [1m[37m{ a: [1m[37m{ b: [1m[37m{ c: [1m[37m{...}[39m[37m[37m[37m[37m[22m[1m[1m[1m[1m }[39m[37m[37m[37m[22m[1m[1m[1m }[39m[37m[37m[22m[1m[1m }[39m[37m[22m[1m,[39m[22m
 [1m[37m  weird: [1m[37m{ \\"a\\\\t\\\\n\\\\n\\\\tb\\": [33m'value'[39m[37m[37m }[39m[37m[22m[1m[39m[22m
 [1m[37m}[39m[22m"
