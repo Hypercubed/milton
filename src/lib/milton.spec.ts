@@ -260,9 +260,9 @@ describe('pretty', () => {
   milton.use(pretty);
 
   test('jsonValues', () => {
-    expect(milton.stringify('')).toBe(`""`);
-    expect(milton.stringify('Hello')).toBe(`"Hello"`);
-    expect(milton.stringify(longText)).toBe(`"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent fer ... us dolor."`);
+    expect(milton.stringify('')).toBe(`''`);
+    expect(milton.stringify('Hello')).toBe(`'Hello'`);
+    expect(milton.stringify(longText)).toBe(`'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent fer ... us dolor.'`);
     expect(milton.stringify(3.14)).toBe(`3.14`);
     expect(milton.stringify(true)).toBe(`true`);
     expect(milton.stringify(false)).toBe(`false`);
@@ -282,8 +282,8 @@ describe('pretty', () => {
 
   test('arrays', () => {
     expect(milton.stringify([])).toBe(`[ ]`);
-    expect(milton.stringify(['Hello', 3.14])).toBe(`[ "Hello", 3.14 ]`);
-    expect(milton.stringify([['Hello'], 3.14])).toBe(`[ [ "Hello" ], 3.14 ]`);
+    expect(milton.stringify(['Hello', 3.14])).toBe(`[ 'Hello', 3.14 ]`);
+    expect(milton.stringify([['Hello'], 3.14])).toBe(`[ [ 'Hello' ], 3.14 ]`);
   });
 
   test('objects', () => {
@@ -324,7 +324,7 @@ describe('pretty', () => {
           ['key2', 'value2']
         ])
       )
-    ).toBe(`Map(2) { key1 => "value1", key2 => "value2" }`);
+    ).toBe(`Map(2) { key1 => 'value1', key2 => 'value2' }`);
   });
 
   test('weak', () => {
@@ -338,7 +338,7 @@ describe('pretty', () => {
 
   test('classes and instances', () => {
     expect(milton.stringify(Foo)).toBe(`[class: Foo]`);
-    expect(milton.stringify(a)).toBe(`Foo { value: "Hello" }`);
+    expect(milton.stringify(a)).toBe(`Foo { value: 'Hello' }`);
   });
 
   test('more and depth', () => {
@@ -372,9 +372,9 @@ describe('prettyColors', () => {
   milton.add(ansiColors);
 
   test('jsonValues', () => {
-    expect(milton.stringify('')).toBe(Chalk.yellow(`""`));
-    expect(milton.stringify('Hello')).toBe(Chalk.yellow(`"Hello"`));
-    expect(milton.stringify(longText)).toBe(Chalk.yellow(`"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent fer ... us dolor."`));
+    expect(milton.stringify('')).toBe(Chalk.yellow(`''`));
+    expect(milton.stringify('Hello')).toBe(Chalk.yellow(`'Hello'`));
+    expect(milton.stringify(longText)).toBe(Chalk.yellow(`'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent fer ... us dolor.'`));
     expect(milton.stringify(3.14)).toBe(Chalk.bold.blue(`3.14`));
     expect(milton.stringify(true)).toBe(Chalk.bold.red(`true`));
     expect(milton.stringify(false)).toBe(Chalk.bold.red(`false`));

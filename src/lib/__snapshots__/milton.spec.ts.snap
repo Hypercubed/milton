@@ -280,14 +280,14 @@ exports[`pretty snapshot 1`] = `
     integer: 1580349408812,
     float: 0.4852754432812123,
     strings: {
-      empty: \\"\\",
-      string: \\"foo\\",
-      multiline: \\"\\\\n        This\\\\n        is\\\\n        multiline\\\\n      \\",
-      longText: \\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent fer ... us dolor.\\"
+      empty: '',
+      string: 'foo',
+      multiline: '\\\\n        This\\\\n        is\\\\n        multiline\\\\n      ',
+      longText: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent fer ... us dolor.'
     },
     arrays: {
       empty: [ ],
-      array: [ \\"one\\", \\"two\\", \\"three\\" ],
+      array: [ 'one', 'two', 'three' ],
       bigarray: [
         0,
         1.1,
@@ -311,7 +311,7 @@ exports[`pretty snapshot 1`] = `
         ...
       ]
     },
-    nested: { hello: \\"hapi\\" },
+    nested: { hello: 'hapi' },
     booleans: { false: false, true: true }
   },
   otherTypes: {
@@ -320,15 +320,15 @@ exports[`pretty snapshot 1`] = `
     regexp: /.*\\\\n/g,
     symbol: Symbol(Waddams),
     function: [ƒ Yes],
-    map: Map(2) { key1 => \\"value1\\", key2 => \\"value2\\" },
+    map: Map(2) { key1 => 'value1', key2 => 'value2' },
     set: Set(3) { 1, 2, 3 },
     date: Sun Dec 17 1995 03:24:00 GMT-0700 (Mountain Standard Time),
     numbers: [ NaN, Infinity, -Infinity, -0 ],
     void: undefined
   },
-  objects: { class: [class: Foo], instance: Foo { value: \\"Hello\\" } },
+  objects: { class: [class: Foo], instance: Foo { value: 'Hello' } },
   deep: { a: { b: { c: {...} } } },
-  weird: { \\"a\\\\t\\\\n\\\\n\\\\tb\\": \\"value\\" }
+  weird: { \\"a\\\\t\\\\n\\\\n\\\\tb\\": 'value' }
 }"
 `;
 
@@ -339,14 +339,14 @@ exports[`prettyColors snapshot 1`] = `
 [1m[37m  [1m[37m  integer: [1m[34m1580349408812[39m[37m[37m[22m[1m[1m,[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m  float: [1m[34m0.4852754432812123[39m[37m[37m[22m[1m[1m,[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m  strings: [1m[37m{[39m[37m[37m[22m[1m[1m[39m[37m[22m[1m[39m[22m
-[1m[37m  [1m[37m  [1m[37m  empty: [33m\\"\\"[39m[37m[37m[37m,[39m[37m[37m[22m[1m[1m[39m[37m[22m[1m[39m[22m
-[1m[37m  [1m[37m  [1m[37m  string: [33m\\"foo\\"[39m[37m[37m[37m,[39m[37m[37m[22m[1m[1m[39m[37m[22m[1m[39m[22m
-[1m[37m  [1m[37m  [1m[37m  multiline: [33m\\"\\\\n        This\\\\n        is\\\\n        multiline\\\\n      \\"[39m[37m[37m[37m,[39m[37m[37m[22m[1m[1m[39m[37m[22m[1m[39m[22m
-[1m[37m  [1m[37m  [1m[37m  longText: [33m\\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent fer ... us dolor.\\"[39m[37m[37m[37m[39m[37m[37m[22m[1m[1m[39m[37m[22m[1m[39m[22m
+[1m[37m  [1m[37m  [1m[37m  empty: [33m''[39m[37m[37m[37m,[39m[37m[37m[22m[1m[1m[39m[37m[22m[1m[39m[22m
+[1m[37m  [1m[37m  [1m[37m  string: [33m'foo'[39m[37m[37m[37m,[39m[37m[37m[22m[1m[1m[39m[37m[22m[1m[39m[22m
+[1m[37m  [1m[37m  [1m[37m  multiline: [33m'\\\\n        This\\\\n        is\\\\n        multiline\\\\n      '[39m[37m[37m[37m,[39m[37m[37m[22m[1m[1m[39m[37m[22m[1m[39m[22m
+[1m[37m  [1m[37m  [1m[37m  longText: [33m'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent fer ... us dolor.'[39m[37m[37m[37m[39m[37m[37m[22m[1m[1m[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m  [1m[37m}[39m[37m[37m[22m[1m[1m,[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m  arrays: [1m[37m{[39m[37m[37m[22m[1m[1m[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m  [1m[37m  empty: [ ],[39m[37m[37m[22m[1m[1m[39m[37m[22m[1m[39m[22m
-[1m[37m  [1m[37m  [1m[37m  array: [ [33m\\"one\\"[39m[37m[37m[37m, [33m\\"two\\"[39m[37m[37m[37m, [33m\\"three\\"[39m[37m[37m[37m ],[39m[37m[37m[22m[1m[1m[39m[37m[22m[1m[39m[22m
+[1m[37m  [1m[37m  [1m[37m  array: [ [33m'one'[39m[37m[37m[37m, [33m'two'[39m[37m[37m[37m, [33m'three'[39m[37m[37m[37m ],[39m[37m[37m[22m[1m[1m[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m  [1m[37m  bigarray: [[39m[37m[37m[22m[1m[1m[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m  [1m[37m    [1m[34m0[39m[37m[37m[37m[22m[1m[1m[1m,[39m[37m[37m[22m[1m[1m[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m  [1m[37m    [1m[34m1.1[39m[37m[37m[37m[22m[1m[1m[1m,[39m[37m[37m[22m[1m[1m[39m[37m[22m[1m[39m[22m
@@ -370,7 +370,7 @@ exports[`prettyColors snapshot 1`] = `
 [1m[37m  [1m[37m  [1m[37m    ...[39m[37m[37m[22m[1m[1m[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m  [1m[37m  ][39m[37m[37m[22m[1m[1m[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m  [1m[37m}[39m[37m[37m[22m[1m[1m,[39m[37m[22m[1m[39m[22m
-[1m[37m  [1m[37m  nested: [1m[37m{ hello: [33m\\"hapi\\"[39m[37m[37m[37m }[39m[37m[37m[22m[1m[1m,[39m[37m[22m[1m[39m[22m
+[1m[37m  [1m[37m  nested: [1m[37m{ hello: [33m'hapi'[39m[37m[37m[37m }[39m[37m[37m[22m[1m[1m,[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m  booleans: [1m[37m{ false: [1m[31mfalse[39m[37m[37m[37m[22m[1m[1m[1m, true: [1m[31mtrue[39m[37m[37m[37m[22m[1m[1m[1m }[39m[37m[37m[22m[1m[1m[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m}[39m[37m[22m[1m,[39m[22m
 [1m[37m  otherTypes: [1m[37m{[39m[37m[22m[1m[39m[22m
@@ -379,7 +379,7 @@ exports[`prettyColors snapshot 1`] = `
 [1m[37m  [1m[37m  regexp: [35m/.*\\\\n/g[39m[37m[37m,[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m  symbol: [1m[35mSymbol(Waddams)[39m[37m[37m[22m[1m[1m,[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m  function: [36m[ƒ Yes][39m[37m[37m,[39m[37m[22m[1m[39m[22m
-[1m[37m  [1m[37m  map: Map(2) { key1 => [33m\\"value1\\"[39m[37m[37m, key2 => [33m\\"value2\\"[39m[37m[37m },[39m[37m[22m[1m[39m[22m
+[1m[37m  [1m[37m  map: Map(2) { key1 => [33m'value1'[39m[37m[37m, key2 => [33m'value2'[39m[37m[37m },[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m  set: Set(3) { [1m[34m1[39m[37m[37m[22m[1m[1m, [1m[34m2[39m[37m[37m[22m[1m[1m, [1m[34m3[39m[37m[37m[22m[1m[1m },[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m  date: [32mSun Dec 17 1995 03:24:00 GMT-0700 (Mountain Standard Time)[39m[37m[37m,[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m  numbers: [[39m[37m[22m[1m[39m[22m
@@ -390,10 +390,10 @@ exports[`prettyColors snapshot 1`] = `
 [1m[37m  [1m[37m  ],[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m  void: [7m[31mundefined[39m[37m[37m[27m[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m}[39m[37m[22m[1m,[39m[22m
-[1m[37m  objects: [1m[37m{ class: [36m[class: Foo][39m[37m[37m, instance: Foo { value: [33m\\"Hello\\"[39m[37m[37m } }[39m[37m[22m[1m,[39m[22m
+[1m[37m  objects: [1m[37m{ class: [36m[class: Foo][39m[37m[37m, instance: Foo { value: [33m'Hello'[39m[37m[37m } }[39m[37m[22m[1m,[39m[22m
 [1m[37m  deep: [1m[37m{[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m  a: [1m[37m{ b: [1m[37m{ c: [1m[37m{...}[39m[37m[37m[37m[37m[22m[1m[1m[1m[1m }[39m[37m[37m[37m[22m[1m[1m[1m }[39m[37m[37m[22m[1m[1m[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m}[39m[37m[22m[1m,[39m[22m
-[1m[37m  weird: [1m[37m{ \\"a\\\\t\\\\n\\\\n\\\\tb\\": [33m\\"value\\"[39m[37m[37m }[39m[37m[22m[1m[39m[22m
+[1m[37m  weird: [1m[37m{ \\"a\\\\t\\\\n\\\\n\\\\tb\\": [33m'value'[39m[37m[37m }[39m[37m[22m[1m[39m[22m
 [1m[37m}[39m[22m"
 `;
