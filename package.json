@@ -1,6 +1,6 @@
 {
   "name": "@hypercubed/milton",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Now Milton, don't be greedy; let's pass it along and make sure everyone gets a piece",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
