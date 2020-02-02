@@ -25,7 +25,7 @@
     "doc:json": "typedoc src/ --exclude **/*.spec.ts --target ES6 --mode file --json build/docs/typedoc.json",
     "reset": "git clean -dfx && git reset --hard && npm i",
     "clean": "trash build test",
-    "np": "npm-run-all build:* && np --no-cleanup"
+    "np": "npm-run-all build:* && np --no-cleanup --yolo"
   },
   "scripts-info": {
     "info": "Display information about the package scripts",
