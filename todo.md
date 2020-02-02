@@ -1,7 +1,7 @@
 # TODO:
 
+- [ ] use `process.stdout.columns` as defualt when possible
 - [ ] colorize keys?
-- [ ] test `toString` in classes plugin
 - [ ] test `blockXSS`
 - [ ] sparse array? (`[ 1, <1 empty item>, 3, <1 empty item>, 5 ]`)
 - [ ] `Buffer`? (`<Buffer 48 65 6c 6c 6f>`)
@@ -18,6 +18,9 @@
 - [ ] Plugin to align object keys?
 - [ ] `memoize` plugin?
 - [ ] `lineSeparator` option?
+
+- maxDepth
+  - [ ] Use class name when possible.
 
 - js preset
   - [ ] long strings (`"sdfsdf" + \n + "sadfsdf"`)
