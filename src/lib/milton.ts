@@ -1,4 +1,4 @@
-import { Plugin, PluginWithOptions, Preset, Path } from './milton.d';
+import { Plugin, PluginWithOptions, Preset, Path } from '../types';
 
 export class Milton {
   private _replacers: PluginWithOptions[] = [];

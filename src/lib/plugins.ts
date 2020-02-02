@@ -1,7 +1,7 @@
 import jsonpointer from 'json-pointer';
 import Chalk from 'chalk';
 
-import { Class, Path, StringifyFunction } from './milton.d';
+import { Class, Path, StringifyFunction } from '../types';
 
 const { toString } = Object.prototype;
 

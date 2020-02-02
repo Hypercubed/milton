@@ -1,4 +1,4 @@
-import { Milton } from './milton';
+import { Milton } from '../lib/milton';
 
 type Class<T = unknown> = new (...args: any[]) => T;
 
