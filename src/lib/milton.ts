@@ -1,4 +1,7 @@
-import { Plugin, PluginWithOptions, Preset, Path } from '../types';
+import { Path, Plugin, Replacer, StringifyFunction } from './plugins';
+import { Preset } from './presets';
+
+type PluginWithOptions = (root: any, get: StringifyFunction) => Replacer;
 
 export class Milton {
   private _replacers: PluginWithOptions[] = [];

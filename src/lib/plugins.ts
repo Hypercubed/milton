@@ -1,7 +1,11 @@
 import jsonpointer from 'json-pointer';
 import Chalk from 'chalk';
 
-import { Class, Path, StringifyFunction } from '../types';
+export type Class<T = unknown> = new (...args: any[]) => T;
+export type Path = (string | number)[];
+export type StringifyFunction = (v: unknown, path: Path) => any;
+export type Replacer = (s: unknown, p: Path, value: unknown) => unknown | string;
+export type Plugin = (options: any, root: any, get: StringifyFunction) => Replacer;
 
 const { toString } = Object.prototype;
 

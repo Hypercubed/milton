@@ -1,4 +1,7 @@
 import { Milton } from './milton';
+
+export type Preset = (_: Milton, ...args: any) => Milton;
+
 import {
   jsonCatch,
   prettySetMap,
