@@ -5,7 +5,8 @@ import { Milton } from './milton';
 import { ansiColors } from './plugins';
 import { json, js, pretty } from './presets';
 
-const longText = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent fermentum suscipit hendrerit. In elit urna, suscipit sed auctor et, maximus eget nibh. Duis sollicitudin odio nisi, eu eleifend nunc molestie non. Curabitur dignissim viverra ullamcorper. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Praesent faucibus at mauris sed lacinia. Morbi tincidunt purus non facilisis lobortis. Donec molestie massa eu lacus dictum eleifend. Suspendisse vel dolor laoreet diam congue hendrerit. Aenean sed luctus lacus, ultricies faucibus dolor.';
+const longText =
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent fermentum suscipit hendrerit. In elit urna, suscipit sed auctor et, maximus eget nibh. Duis sollicitudin odio nisi, eu eleifend nunc molestie non. Curabitur dignissim viverra ullamcorper. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Praesent faucibus at mauris sed lacinia. Morbi tincidunt purus non facilisis lobortis. Donec molestie massa eu lacus dictum eleifend. Suspendisse vel dolor laoreet diam congue hendrerit. Aenean sed luctus lacus, ultricies faucibus dolor.';
 const bigarray = Array.from({ length: 100 }).map((_k, i) => i * 1.1);
 
 class Foo {
@@ -199,7 +200,9 @@ describe('js objects', () => {
     expect(milton.stringify(-0)).toBe(`-0`);
     expect(milton.stringify(123n)).toBe(`123n`);
     expect(milton.stringify(-100000000000000005n)).toBe(`-100000000000000005n`);
-    expect(milton.stringify(BigInt('-100000000000000006'))).toBe(`-100000000000000006n`);
+    expect(milton.stringify(BigInt('-100000000000000006'))).toBe(
+      `-100000000000000006n`
+    );
   });
 
   test('arrays', () => {
@@ -262,7 +265,9 @@ describe('pretty', () => {
   test('jsonValues', () => {
     expect(milton.stringify('')).toBe(`''`);
     expect(milton.stringify('Hello')).toBe(`'Hello'`);
-    expect(milton.stringify(longText)).toBe(`'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent fer ... us dolor.'`);
+    expect(milton.stringify(longText)).toBe(
+      `'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent fer ... us dolor.'`
+    );
     expect(milton.stringify(3.14)).toBe(`3.14`);
     expect(milton.stringify(true)).toBe(`true`);
     expect(milton.stringify(false)).toBe(`false`);
@@ -277,7 +282,9 @@ describe('pretty', () => {
     expect(milton.stringify(-0)).toBe(`-0`);
     expect(milton.stringify(123n)).toBe(`123n`);
     expect(milton.stringify(-100000000000000005n)).toBe(`-100000000000000005n`);
-    expect(milton.stringify(BigInt('-100000000000000006'))).toBe(`-100000000000000006n`);
+    expect(milton.stringify(BigInt('-100000000000000006'))).toBe(
+      `-100000000000000006n`
+    );
   });
 
   test('arrays', () => {
@@ -329,7 +336,14 @@ describe('pretty', () => {
 
   test('weak', () => {
     expect(milton.stringify(new WeakSet([{}, {}, {}]))).toBe(`WeakSet {}`);
-    expect(milton.stringify(new WeakMap([[{}, {}], [{}, {}]]))).toBe(`WeakMap {}`);
+    expect(
+      milton.stringify(
+        new WeakMap([
+          [{}, {}],
+          [{}, {}]
+        ])
+      )
+    ).toBe(`WeakMap {}`);
   });
 
   test('Promises', () => {
@@ -374,7 +388,11 @@ describe('prettyColors', () => {
   test('jsonValues', () => {
     expect(milton.stringify('')).toBe(Chalk.yellow(`''`));
     expect(milton.stringify('Hello')).toBe(Chalk.yellow(`'Hello'`));
-    expect(milton.stringify(longText)).toBe(Chalk.yellow(`'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent fer ... us dolor.'`));
+    expect(milton.stringify(longText)).toBe(
+      Chalk.yellow(
+        `'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent fer ... us dolor.'`
+      )
+    );
     expect(milton.stringify(3.14)).toBe(Chalk.bold.blue(`3.14`));
     expect(milton.stringify(true)).toBe(Chalk.bold.red(`true`));
     expect(milton.stringify(false)).toBe(Chalk.bold.red(`false`));
@@ -388,8 +406,12 @@ describe('prettyColors', () => {
     expect(milton.stringify(-Infinity)).toBe(Chalk.bold.blue(`-Infinity`));
     expect(milton.stringify(-0)).toBe(Chalk.bold.blue(`-0`));
     expect(milton.stringify(123n)).toBe(Chalk.bold.blue(`123n`));
-    expect(milton.stringify(-100000000000000005n)).toBe(Chalk.bold.blue(`-100000000000000005n`));
-    expect(milton.stringify(BigInt('-100000000000000006'))).toBe(Chalk.bold.blue(`-100000000000000006n`));
+    expect(milton.stringify(-100000000000000005n)).toBe(
+      Chalk.bold.blue(`-100000000000000005n`)
+    );
+    expect(milton.stringify(BigInt('-100000000000000006'))).toBe(
+      Chalk.bold.blue(`-100000000000000006n`)
+    );
   });
 
   test('js objects', () => {
@@ -411,7 +433,9 @@ describe('prettyColors', () => {
   });
 
   test('Promises', () => {
-    expect(milton.stringify(Promise.resolve('Hello'))).toBe(Chalk.italic.white(`Promise { ? }`));
+    expect(milton.stringify(Promise.resolve('Hello'))).toBe(
+      Chalk.italic.white(`Promise { ? }`)
+    );
   });
 
   test('snapshot', () => {

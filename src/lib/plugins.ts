@@ -163,7 +163,10 @@ export const objectDecender = (
           const v = get(s[key], path.concat([key]));
           key = String(key);
           const esc = escape(String(key));
-          key = esc !== key || options.quoteKeys ? `${options.quote}${esc}${options.quote}` : key;
+          key =
+            esc !== key || options.quoteKeys
+              ? `${options.quote}${esc}${options.quote}`
+              : key;
           if (v) acc.push(key + (options.compact ? ':' : ': ') + v);
         }
       }
@@ -329,7 +332,10 @@ export const prettySetMap = (
         .map(([key, v], i) => {
           key = String(key);
           const esc = escape(String(key));
-          key = esc !== key || options.quote ? `${options.quote}${esc}${options.quote}` : key;
+          key =
+            esc !== key || options.quote
+              ? `${options.quote}${esc}${options.quote}`
+              : key;
           return `${key} => ` + g(v, p.concat([i]));
         })
         .join(', ');
@@ -490,11 +496,12 @@ export const maxArrayLength = (options: typeof MAX_ARRAY_OPTIONS) => {
 export const blockXSS = () => {
   return (s: any) => {
     if (typeof s === 'string') {
-      return s.replace(/\u2028/g, '\\u2028')
-      .replace(/\u2029/g, '\\u2029')
-      .replace(/</g, '\\u003C')
-      .replace(/>/g, '\\u003E')
-      .replace(/\//g, '\\u002F');
+      return s
+        .replace(/\u2028/g, '\\u2028')
+        .replace(/\u2029/g, '\\u2029')
+        .replace(/</g, '\\u003C')
+        .replace(/>/g, '\\u003E')
+        .replace(/\//g, '\\u002F');
     }
     return s;
   };
@@ -510,8 +517,14 @@ export const trimStrings = (options: typeof TRIM_STRING_OPTIONS) => {
   options = { ...TRIM_STRING_OPTIONS, ...options };
   options.show = options.show || options.max;
   return (s: any, _p: Path, v: any) => {
-    if (typeof v === 'string' && typeof s === 'string' && s.length > options.max) {
-      return s.slice(0, options.show[0]) + options.snip + s.slice(-options.show[1]);
+    if (
+      typeof v === 'string' &&
+      typeof s === 'string' &&
+      s.length > options.max
+    ) {
+      return (
+        s.slice(0, options.show[0]) + options.snip + s.slice(-options.show[1])
+      );
     }
     return s;
   };
