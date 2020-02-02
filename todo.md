@@ -1,5 +1,7 @@
 # TODO:
 
+- [ ] check `breakLength`
+- [ ] test `catchToString` plugin
 - [ ] test `blockXSS`
 - [ ] sparse array? (`[ 1, <1 empty item>, 3, <1 empty item>, 5 ]`)
 - [ ] `Buffer`? (`<Buffer 48 65 6c 6c 6f>`)
@@ -13,7 +15,7 @@
 - [ ] toHumanReadableAnsi?
 - [ ] plugin helpers (see https://github.com/twada/stringifier/blob/master/strategies.js)
 - [ ] check other keys (i.e. `foo-bar` -> `"foo-bar"`) `/^[a-z$_][a-z$_0-9]*$/i`
-- [ ] Align object keys?
+- [ ] Plugin to align object keys?
 - [ ] `memoize` plugin?
 - [ ] `lineSeparator` option?
 

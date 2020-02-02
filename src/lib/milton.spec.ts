@@ -2,7 +2,7 @@ import Chalk from 'chalk';
 
 // tslint:disable:no-expression-statement
 import { Milton } from './milton';
-import { ansiColors } from './plugins';
+import { ansiColors, arrayDecender, breakLength } from './plugins';
 import { json, js, pretty } from './presets';
 
 const longText =
@@ -441,4 +441,33 @@ describe('prettyColors', () => {
   test('snapshot', () => {
     expect(milton.stringify(obj)).toMatchSnapshot();
   });
+});
+
+describe('arrayDecender', () => {
+  const m = new Milton();
+
+  m.add(arrayDecender, { comma: false, brackets: '[]' });
+  m.add(breakLength, { compact: false });
+
+  expect(m.stringify([1, 2, 3])).toBe('[ 1 2 3 ]');
+});
+
+describe('breakLength', () => {
+  const m = new Milton();
+
+  m.add(arrayDecender, { comma: true, brackets: '[]' });
+  m.add(breakLength, { compact: false, breakLength: 15 });
+
+  expect(m.stringify([1, 2, 3])).toBe('[ 1, 2, 3 ]');
+  expect(m.stringify([1, 2, 3, 4, 5])).toBe('[\n1,\n2,\n3,\n4,\n5\n]');
+});
+
+describe('colorize', () => {
+  const m = new Milton();
+
+  m.add(ansiColors, { number: 'unknown.style' });
+
+  expect(() => {
+    m.stringify(123);
+  }).toThrow('Unknown Chalk style: unknown.style');
 });

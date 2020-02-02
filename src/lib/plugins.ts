@@ -4,10 +4,18 @@ import Chalk from 'chalk';
 export type Class<T = unknown> = new (...args: any[]) => T;
 export type Path = (string | number)[];
 export type StringifyFunction = (v: unknown, path: Path) => any;
-export type Replacer = (s: unknown, p: Path, value: unknown) => unknown | string;
-export type Plugin = (options: any, root: any, get: StringifyFunction) => Replacer;
+export type Replacer = (
+  s: unknown,
+  p: Path,
+  value: unknown
+) => unknown | string;
+export type Plugin = (
+  options: any,
+  root: any,
+  get: StringifyFunction
+) => Replacer;
 
-const { toString } = Object.prototype;
+const { toString, hasOwnProperty } = Object.prototype;
 
 function isClass(x: any): x is Class {
   return typeof x === 'function' && x.toString().startsWith('class ');
@@ -62,8 +70,9 @@ const JSON_OPTIONS = {
 /**
  * Process accepted JSON values
  */
-export const jsonValues = (options: typeof JSON_OPTIONS) => {
-  options = { ...JSON_OPTIONS, ...options };
+export const jsonValues = (_options: Partial<typeof JSON_OPTIONS>) => {
+  // tslint:disable-next-line: no-object-literal-type-assertion
+  const options: typeof JSON_OPTIONS = { ...JSON_OPTIONS, ..._options };
   options.quote = quotes(options.quote);
   return (s: any, _p: Path, value: any) => {
     const t = typeof s;
@@ -79,8 +88,8 @@ export const jsonValues = (options: typeof JSON_OPTIONS) => {
 /**
  * Process unaccepted JSON values
  */
-export const jsonCatch = (options: typeof JSON_OPTIONS) => {
-  options = { ...JSON_OPTIONS, ...options };
+export const jsonCatch = (_options: Partial<typeof JSON_OPTIONS>) => {
+  const options = { ...JSON_OPTIONS, ..._options };
   options.quote = quotes(options.quote);
   return (s: any) => {
     const t = typeof s;
@@ -101,11 +110,11 @@ const ARRAY_DECENDER_OPTIONS = {
 };
 
 export const arrayDecender = (
-  options: typeof ARRAY_DECENDER_OPTIONS,
+  _options: Partial<typeof ARRAY_DECENDER_OPTIONS>,
   _root: any,
   get: StringifyFunction
 ) => {
-  options = { ...ARRAY_DECENDER_OPTIONS, ...options };
+  const options = { ...ARRAY_DECENDER_OPTIONS, ..._options };
 
   const seen: any[] = [];
   return (s: any, path: Path) => {
@@ -118,7 +127,7 @@ export const arrayDecender = (
 
       const acc = [];
       for (const key in s) {
-        if (s.hasOwnProperty(key)) {
+        if (hasOwnProperty.call(s, key)) {
           const v = get(s[key], path.concat([key]));
           if (v) acc.push(v);
         }
@@ -127,7 +136,7 @@ export const arrayDecender = (
       return (
         options.brackets[0] +
         '\n' +
-        acc.join(options.comma ? ',\n' : ' \n') +
+        acc.join(options.comma ? ',\n' : '\n') +
         '\n' +
         options.brackets[1]
       );
@@ -145,11 +154,11 @@ const OBJECT_DECENDER_OPTIONS = {
 };
 
 export const objectDecender = (
-  options: typeof OBJECT_DECENDER_OPTIONS,
+  _options: Partial<typeof OBJECT_DECENDER_OPTIONS>,
   _root: any,
   get: StringifyFunction
 ) => {
-  options = { ...OBJECT_DECENDER_OPTIONS, ...options };
+  const options = { ...OBJECT_DECENDER_OPTIONS, ..._options };
   options.quote = quotes(options.quote);
 
   const seen: any[] = [];
@@ -163,7 +172,7 @@ export const objectDecender = (
 
       const acc = [];
       for (let key in s) {
-        if (s.hasOwnProperty(key)) {
+        if (hasOwnProperty.call(s, key)) {
           const v = get(s[key], path.concat([key]));
           key = String(key);
           const esc = escape(String(key));
@@ -191,8 +200,10 @@ const INDENT_OPTIONS = {
   indent: '  ' as string | number | boolean
 };
 
-export const indent = (options: typeof INDENT_OPTIONS) => (s: any) => {
-  options = { ...INDENT_OPTIONS, ...options };
+export const indent = (_options: Partial<typeof INDENT_OPTIONS>) => (
+  s: any
+) => {
+  const options = { ...INDENT_OPTIONS, ..._options };
   options.indent = indentOption(options.indent);
   if (typeof s === 'string') {
     return s
@@ -210,8 +221,8 @@ const BREAK_OPTIONS = {
   breakLength: 80
 };
 
-export const breakLength = (options: typeof BREAK_OPTIONS) => {
-  options = { ...BREAK_OPTIONS, ...options };
+export const breakLength = (_options: Partial<typeof BREAK_OPTIONS>) => {
+  const options = { ...BREAK_OPTIONS, ..._options };
   return (s: any) => {
     if (typeof s === 'string') {
       const oneline = s.replace(/\n\s*/g, options.compact ? '' : ' ');
@@ -242,8 +253,10 @@ const SYMBOLS_OPTIONS = {
   quote: `"` as string | boolean
 };
 
-export const symbols = (options: typeof SYMBOLS_OPTIONS) => (s: any) => {
-  options = { ...SYMBOLS_OPTIONS, ...options };
+export const symbols = (_options: Partial<typeof SYMBOLS_OPTIONS>) => (
+  s: any
+) => {
+  const options = { ...SYMBOLS_OPTIONS, ..._options };
   options.quote = quotes(options.quote);
   if (typeof s === 'symbol') {
     const esc = escape((s as any).description);
@@ -324,11 +337,11 @@ const SET_MAP_OPTIONS = {
 
 // Compact option, quote keys?
 export const prettySetMap = (
-  options: typeof SET_MAP_OPTIONS,
+  _options: Partial<typeof SET_MAP_OPTIONS>,
   _root: any,
   g: any
 ) => {
-  options = { ...SET_MAP_OPTIONS, ...options };
+  const options = { ...SET_MAP_OPTIONS, ..._options };
   options.quote = quotes(options.quote);
   return (s: any, p: Path) => {
     if (s instanceof Map) {
@@ -384,11 +397,11 @@ const PRIVATE_OPTIONS = {
   prefix: '_'
 };
 
-export const skipPrivate = (options: typeof PRIVATE_OPTIONS) => {
-  options = { ...PRIVATE_OPTIONS, ...options };
+export const skipPrivate = (options: Partial<typeof PRIVATE_OPTIONS>) => {
+  const _options = { ...PRIVATE_OPTIONS, ...options };
   return (s: any, p: Path) => {
     const key = p[p.length - 1];
-    if (typeof key === 'string' && key.startsWith(options.prefix)) {
+    if (typeof key === 'string' && key.startsWith(_options.prefix)) {
       return '';
     }
     return s;
@@ -426,7 +439,7 @@ export const COLORIZE_OPTIONS = {
   Promise: 'white.italic'
 };
 
-export const ansiColors = (colors: typeof COLORIZE_OPTIONS) => (
+export const ansiColors = (colors: { [key: string]: string }) => (
   s: any,
   _p: Path,
   v: any
@@ -435,7 +448,7 @@ export const ansiColors = (colors: typeof COLORIZE_OPTIONS) => (
   let t: string = typeof v;
   if (v === null) {
     t = 'null';
-  } else if (t === 'object') {
+  } else if (t === 'object' && v.constructor) {
     t = v.constructor.name;
   }
 
@@ -446,7 +459,11 @@ export const ansiColors = (colors: typeof COLORIZE_OPTIONS) => (
   for (let i = 0; i < colorArr.length; ++i) {
     const color = colorArr[i];
     // tslint:disable-next-line: tsr-detect-unsafe-properties-access
-    s = (Chalk as any)[color](s);
+    const f = (Chalk as any)[color];
+    if (typeof f !== 'function') {
+      throw new Error(`Unknown Chalk style: ${_colors}`);
+    }
+    s = f(s);
   }
   return s;
 };
@@ -455,8 +472,8 @@ const DEPTH_OPTIONS = {
   max: 3
 };
 
-export const maxDepth = (options: typeof DEPTH_OPTIONS) => {
-  options = { ...DEPTH_OPTIONS, ...options };
+export const maxDepth = (_options: Partial<typeof DEPTH_OPTIONS>) => {
+  const options = { ...DEPTH_OPTIONS, ..._options };
   return (s: any, p: Path, v: any) => {
     const t = toString.call(v);
     if (p.length > options.max) {
@@ -477,8 +494,8 @@ const MAX_ARRAY_OPTIONS = {
 };
 
 // Typed arrays, sets
-export const maxArrayLength = (options: typeof MAX_ARRAY_OPTIONS) => {
-  options = { ...MAX_ARRAY_OPTIONS, ...options };
+export const maxArrayLength = (_options: Partial<typeof MAX_ARRAY_OPTIONS>) => {
+  const options = { ...MAX_ARRAY_OPTIONS, ..._options };
   options.show = options.show || options.max;
   return (s: any, _p: Path, v: any) => {
     const t = toString.call(v);
@@ -517,8 +534,8 @@ const TRIM_STRING_OPTIONS = {
   snip: ' ... '
 };
 
-export const trimStrings = (options: typeof TRIM_STRING_OPTIONS) => {
-  options = { ...TRIM_STRING_OPTIONS, ...options };
+export const trimStrings = (_options: Partial<typeof TRIM_STRING_OPTIONS>) => {
+  const options = { ...TRIM_STRING_OPTIONS, ..._options };
   options.show = options.show || options.max;
   return (s: any, _p: Path, v: any) => {
     if (
@@ -529,6 +546,15 @@ export const trimStrings = (options: typeof TRIM_STRING_OPTIONS) => {
       return (
         s.slice(0, options.show[0]) + options.snip + s.slice(-options.show[1])
       );
+    }
+    return s;
+  };
+};
+
+export const catchToString = () => {
+  return (s: any) => {
+    if (s.toString && typeof s.toString === 'function') {
+      return s.toString();
     }
     return s;
   };
