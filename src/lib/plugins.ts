@@ -1,4 +1,5 @@
 import jsonpointer from 'json-pointer';
+import stripAnsi from 'strip-ansi';
 import Chalk from 'chalk';
 
 export type Class<T = unknown> = new (...args: any[]) => T;
@@ -226,8 +227,7 @@ export const breakLength = (_options: Partial<typeof BREAK_OPTIONS>) => {
   return (s: any) => {
     if (typeof s === 'string') {
       const oneline = s.replace(/\n\s*/g, options.compact ? '' : ' ');
-
-      return oneline.length < options.breakLength ? oneline : s;
+      return stripAnsi(oneline).length < options.breakLength ? oneline : s;
     }
     return s;
   };
@@ -551,11 +551,3 @@ export const trimStrings = (_options: Partial<typeof TRIM_STRING_OPTIONS>) => {
   };
 };
 
-export const catchToString = () => {
-  return (s: any) => {
-    if (s.toString && typeof s.toString === 'function') {
-      return s.toString();
-    }
-    return s;
-  };
-};

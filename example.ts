@@ -1,3 +1,4 @@
+#!/usr/bin/env ts-node
 import { Milton, pretty, ansiColors } from './src/';
 
 const milton = new Milton();

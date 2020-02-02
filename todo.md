@@ -1,7 +1,7 @@
 # TODO:
 
-- [ ] check `breakLength`
-- [ ] test `catchToString` plugin
+- [ ] colorize keys?
+- [ ] test `toString` in classes plugin
 - [ ] test `blockXSS`
 - [ ] sparse array? (`[ 1, <1 empty item>, 3, <1 empty item>, 5 ]`)
 - [ ] `Buffer`? (`<Buffer 48 65 6c 6c 6f>`)

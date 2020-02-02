@@ -26,8 +26,7 @@ import {
   regexp,
   setMap,
   trimStrings,
-  promises,
-  catchToString
+  promises
 } from './plugins';
 
 export function json(_: Milton) {
@@ -78,7 +77,6 @@ export function pretty(_: Milton) {
   _.add(prettyRegex);
   _.add(prettySetMap);
   _.add(promises);
-  _.add(catchToString);
 
   _.add(trimStrings);
   _.add(maxArrayLength, { max: 20 });
