@@ -1,6 +1,7 @@
 import jsonpointer from 'json-pointer';
 import stripAnsi from 'strip-ansi';
 import Chalk from 'chalk';
+import typeName from 'type-name';
 
 export type Class<T = unknown> = new (...args: any[]) => T;
 export type Path = (string | number)[];
@@ -76,11 +77,17 @@ export const jsonValues = (_options: Partial<typeof JSON_OPTIONS>) => {
   const options: typeof JSON_OPTIONS = { ...JSON_OPTIONS, ..._options };
   options.quote = quotes(options.quote);
   return (s: any, _p: Path, value: any) => {
-    const t = typeof s;
-    if (s === null || t === 'number' || t === 'boolean') {
-      return String(s);
-    } else if (t === 'string' && value === s) {
-      return options.quote + escape(s) + options.quote;
+    switch (typeof s) {
+      // @ts-ignore
+      case 'object':
+        if (s !== null) return s;
+      case 'number':
+      case 'boolean':
+        return String(s);
+      case 'string':
+        if (value === s) {
+          return options.quote + escape(s) + options.quote;
+        }
     }
     return s;
   };
@@ -93,14 +100,18 @@ export const jsonCatch = (_options: Partial<typeof JSON_OPTIONS>) => {
   const options = { ...JSON_OPTIONS, ..._options };
   options.quote = quotes(options.quote);
   return (s: any) => {
-    const t = typeof s;
     if (s instanceof Date) {
       return options.quote + s.toISOString() + options.quote;
-    } else if (t === 'object') {
-      return `{}`;
-    } else if (t === 'symbol' || t === 'function') {
-      return undefined;
     }
+
+    switch (typeof s) {
+      case 'object':
+        return `{}`;
+      case 'symbol':
+      case 'function':
+        return undefined;
+    }
+
     return s;
   };
 };
@@ -116,6 +127,9 @@ export const arrayDecender = (
   get: StringifyFunction
 ) => {
   const options = { ...ARRAY_DECENDER_OPTIONS, ..._options };
+  const pre = options.brackets[0] + '\n';
+  const post = '\n' + options.brackets[1];
+  const seperator = options.comma ? ',\n' : '\n';
 
   const seen: any[] = [];
   return (s: any, path: Path) => {
@@ -134,13 +148,7 @@ export const arrayDecender = (
         }
       }
       seen.pop();
-      return (
-        options.brackets[0] +
-        '\n' +
-        acc.join(options.comma ? ',\n' : '\n') +
-        '\n' +
-        options.brackets[1]
-      );
+      return pre + acc.join(seperator) + post;
     }
     return s;
   };
@@ -161,6 +169,10 @@ export const objectDecender = (
 ) => {
   const options = { ...OBJECT_DECENDER_OPTIONS, ..._options };
   options.quote = quotes(options.quote);
+  const pre = options.brackets[0] + '\n';
+  const post = '\n' + options.brackets[1];
+  const seperator = options.comma ? ',\n' : '\n';
+  const keySeperator = options.compact ? ':' : ': ';
 
   const seen: any[] = [];
   return (s: any, path: Path) => {
@@ -181,17 +193,11 @@ export const objectDecender = (
             esc !== key || options.quoteKeys
               ? `${options.quote}${esc}${options.quote}`
               : key;
-          if (v) acc.push(key + (options.compact ? ':' : ': ') + v);
+          if (v) acc.push(key + keySeperator + v);
         }
       }
       seen.pop();
-      return (
-        options.brackets[0] +
-        '\n' +
-        acc.join(options.comma ? ',\n' : ' \n') +
-        '\n' +
-        options.brackets[1]
-      );
+      return pre + acc.join(seperator) + post;
     }
     return s;
   };
@@ -201,20 +207,20 @@ const INDENT_OPTIONS = {
   indent: '  ' as string | number | boolean
 };
 
-export const indent = (_options: Partial<typeof INDENT_OPTIONS>) => (
-  s: any
-) => {
+export const indent = (_options: Partial<typeof INDENT_OPTIONS>) => {
   const options = { ...INDENT_OPTIONS, ..._options };
   options.indent = indentOption(options.indent);
-  if (typeof s === 'string') {
-    return s
-      .split('\n')
-      .map((ss, i, arr) =>
-        i > 0 && i < arr.length - 1 ? options.indent + ss : ss
-      )
-      .join('\n');
-  }
-  return s;
+  return (s: any) => {
+    if (typeof s === 'string') {
+      return s
+        .split('\n')
+        .map((ss, i, arr) =>
+          i > 0 && i < arr.length - 1 ? options.indent + ss : ss
+        )
+        .join('\n');
+    }
+    return s;
+  };
 };
 
 const BREAK_OPTIONS = {
@@ -224,9 +230,10 @@ const BREAK_OPTIONS = {
 
 export const breakLength = (_options: Partial<typeof BREAK_OPTIONS>) => {
   const options = { ...BREAK_OPTIONS, ..._options };
+  const replaceValue = options.compact ? '' : ' ';
   return (s: any) => {
     if (typeof s === 'string') {
-      const oneline = s.replace(/\n\s*/g, options.compact ? '' : ' ');
+      const oneline = s.replace(/\n\s*/g, replaceValue);
       return stripAnsi(oneline).length < options.breakLength ? oneline : s;
     }
     return s;
@@ -253,16 +260,16 @@ const SYMBOLS_OPTIONS = {
   quote: `"` as string | boolean
 };
 
-export const symbols = (_options: Partial<typeof SYMBOLS_OPTIONS>) => (
-  s: any
-) => {
+export const symbols = (_options: Partial<typeof SYMBOLS_OPTIONS>) => {
   const options = { ...SYMBOLS_OPTIONS, ..._options };
-  options.quote = quotes(options.quote);
-  if (typeof s === 'symbol') {
-    const esc = escape((s as any).description);
-    return `Symbol(${options.quote}${esc}${options.quote})`;
-  }
-  return s;
+  options.quote = quotes(options.quote);  
+  return (s: any) => {
+    if (typeof s === 'symbol') {
+      const esc = escape((s as any).description);
+      return `Symbol(${options.quote}${esc}${options.quote})`;
+    }
+    return s;
+  };
 };
 
 // TODO: args?
@@ -353,25 +360,24 @@ export const prettySetMap = (
             esc !== key || options.quote
               ? `${options.quote}${esc}${options.quote}`
               : key;
-          return `${key} => ` + g(v, p.concat([i]));
+          return `${key} => ${g(v, p.concat([i]))}`;
         })
         .join(', ');
       return `Map(${s.size}) { ${arr} }`;
-    } else if (s instanceof Set) {
+    }
+    if (s instanceof Set) {
       const arr = Array.from(s)
         .map((x, i) => g(x, p.concat([i])))
         .join(', ');
       return `Set(${s.size}) { ${arr} }`;
-    } else if (s instanceof WeakMap) {
-      return `WeakMap {}`;
-    } else if (s instanceof WeakSet) {
-      return `WeakSet {}`;
     }
+    if (s instanceof WeakMap) return `WeakMap {}`;
+    if (s instanceof WeakSet) return `WeakSet {}`;
     return s;
   };
 };
 
-// Get rid of v
+// Get rid of v?
 export const classes = () => (s: any, _p: Path, v: any) => {
   const t = toString.call(v);
   if (t === '[object Object]') {
@@ -439,33 +445,26 @@ export const COLORIZE_OPTIONS = {
   Promise: 'white.italic'
 };
 
-export const ansiColors = (colors: { [key: string]: string }) => (
-  s: any,
-  _p: Path,
-  v: any
-) => {
+export const ansiColors = (colors: { [key: string]: string }) => {
   colors = { ...COLORIZE_OPTIONS, ...colors };
-  let t: string = typeof v;
-  if (v === null) {
-    t = 'null';
-  } else if (t === 'object' && v.constructor) {
-    t = v.constructor.name;
-  }
+  return (s: any, _p: Path, v: any) => {
+    const t: string = typeName(v);
 
-  const _colors = (colors as any)[t];
-  if (!_colors) return s;
+    const _colors = (colors as any)[t];
+    if (!_colors) return s;
 
-  const colorArr = _colors.split('.');
-  for (let i = 0; i < colorArr.length; ++i) {
-    const color = colorArr[i];
-    // tslint:disable-next-line: tsr-detect-unsafe-properties-access
-    const f = (Chalk as any)[color];
-    if (typeof f !== 'function') {
-      throw new Error(`Unknown Chalk style: ${_colors}`);
+    const colorArr = _colors.split('.');
+    for (let i = 0; i < colorArr.length; ++i) {
+      const color = colorArr[i];
+      // tslint:disable-next-line: tsr-detect-unsafe-properties-access
+      const f = (Chalk as any)[color];
+      if (typeof f !== 'function') {
+        throw new Error(`Unknown Chalk style: ${_colors}`);
+      }
+      s = f(s);
     }
-    s = f(s);
-  }
-  return s;
+    return s;
+  };
 };
 
 const DEPTH_OPTIONS = {

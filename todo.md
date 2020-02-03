@@ -19,23 +19,28 @@
 - [ ] `memoize` plugin?
 - [ ] `lineSeparator` option?
 
-- maxDepth
+## Optimization
+  - [ ] https://github.com/twada/type-name passed to plugins
+  - [ ] State object - https://github.com/substack/js-traverse
+
+## maxDepth
   - [ ] Use class name when possible.
 
-- js preset
+## js preset
   - [ ] long strings (`"sdfsdf" + \n + "sadfsdf"`)
   - [ ] Well known objects (i.e. `global` -> `(0,eval)('this')`)
 
-- pretty preset
+## pretty preset
   - [ ] very long bigint?
   - [ ] Well known objects (i.e. `global` -> `[global]`)
 
-- objectDecender
+## objectDecender
   - [ ] test comma option
   - [ ] test spacing option
 
-- functions plugin
-  - `ƒ B()`
-  - `() => 1`
-  - js version?
+## functions plugin
+  - [ ] `ƒ B()`
+  - [ ] `() => 1`
+  - [ ] js version?
   - [ ] `[object GeneratorFunction]`, `[object Arguments]`?
+  - [ ] Anonymous functions?

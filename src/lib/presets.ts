@@ -31,9 +31,11 @@ import {
 } from './plugins';
 
 export function json(_: Milton) {
+  _.add(jsonValues);
+
   _.add(arrayDecender);
   _.add(objectDecender);
-  _.add(jsonValues);
+  
   _.add(jsonCatch);
 
   _.add(indent);
@@ -42,8 +44,6 @@ export function json(_: Milton) {
 }
 
 export function js(_: Milton) {
-  _.add(arrayDecender);
-  _.add(objectDecender);
   _.add(jsValues);
   _.add(jsonValues, { quote: `'` });
 
@@ -52,6 +52,10 @@ export function js(_: Milton) {
   _.add(errors);
   _.add(regexp);
   _.add(setMap);
+
+  _.add(arrayDecender);
+  _.add(objectDecender);
+
   _.add(jsonCatch);
 
   _.add(indent);
@@ -63,12 +67,7 @@ export function js(_: Milton) {
 export function pretty(_: Milton) {
   _.add(reference);
 
-  _.add(arrayDecender);
-  _.add(objectDecender, { quoteKeys: false, compact: false });
-
   _.add(functions);
-  _.add(classes);
-  _.add(objectToString);
   _.add(skipPrivate);
   _.add(jsValues);
   _.add(jsonValues, { quote: `'` });
@@ -79,6 +78,12 @@ export function pretty(_: Milton) {
   _.add(prettyRegex);
   _.add(prettySetMap);
   _.add(promises);
+
+  _.add(arrayDecender);
+  _.add(objectDecender, { quoteKeys: false, compact: false });
+
+  _.add(classes);
+  _.add(objectToString);
 
   _.add(trimStrings);
   _.add(maxArrayLength, { max: 20 });
