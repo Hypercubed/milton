@@ -54,12 +54,12 @@ export function js(_: Milton) {
   _.add(setMap);
 
   _.add(arrayDecender);
-  _.add(objectDecender);
+  _.add(objectDecender, { quote: false, compact: false });
 
   _.add(jsonCatch);
 
   _.add(indent);
-  _.add(breakLength);
+  _.add(breakLength, { compact: false });
 
   return _;
 }

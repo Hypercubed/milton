@@ -2,20 +2,20 @@
 
 exports[`js objects snapshot 1`] = `
 "{
-  \\"json\\":{
-    \\"null\\":null,
-    \\"integer\\":1580349408812,
-    \\"float\\":0.4852754432812123,
-    \\"strings\\":{
-      \\"empty\\":'',
-      \\"string\\":'foo',
-      \\"multiline\\":'\\\\n        This\\\\n        is\\\\n        multiline\\\\n      ',
-      \\"longText\\":'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent fermentum suscipit hendrerit. In elit urna, suscipit sed auctor et, maximus eget nibh. Duis sollicitudin odio nisi, eu eleifend nunc molestie non. Curabitur dignissim viverra ullamcorper. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Praesent faucibus at mauris sed lacinia. Morbi tincidunt purus non facilisis lobortis. Donec molestie massa eu lacus dictum eleifend. Suspendisse vel dolor laoreet diam congue hendrerit. Aenean sed luctus lacus, ultricies faucibus dolor.'
+  json: {
+    null: null,
+    integer: 1580349408812,
+    float: 0.4852754432812123,
+    strings: {
+      empty: '',
+      string: 'foo',
+      multiline: '\\\\n        This\\\\n        is\\\\n        multiline\\\\n      ',
+      longText: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent fermentum suscipit hendrerit. In elit urna, suscipit sed auctor et, maximus eget nibh. Duis sollicitudin odio nisi, eu eleifend nunc molestie non. Curabitur dignissim viverra ullamcorper. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Praesent faucibus at mauris sed lacinia. Morbi tincidunt purus non facilisis lobortis. Donec molestie massa eu lacus dictum eleifend. Suspendisse vel dolor laoreet diam congue hendrerit. Aenean sed luctus lacus, ultricies faucibus dolor.'
     },
-    \\"arrays\\":{
-      \\"empty\\":[],
-      \\"array\\":['one','two','three'],
-      \\"bigarray\\":[
+    arrays: {
+      empty: [ ],
+      array: [ 'one', 'two', 'three' ],
+      bigarray: [
         0,
         1.1,
         2.2,
@@ -118,26 +118,26 @@ exports[`js objects snapshot 1`] = `
         108.9
       ]
     },
-    \\"nested\\":{\\"hello\\":'hapi'},
-    \\"booleans\\":{\\"false\\":false,\\"true\\":true}
+    nested: { hello: 'hapi' },
+    booleans: { false: false, true: true }
   },
-  \\"otherTypes\\":{
-    \\"undefined\\":undefined,
-    \\"error\\":new Error('bad'),
-    \\"regexp\\":new RegExp('.*\\\\\\\\n', 'g'),
-    \\"symbol\\":Symbol('Waddams'),
-    \\"map\\":new Map([['key1','value1'],['key2','value2']]),
-    \\"set\\":new Set([1,2,3]),
-    \\"date\\":new Date('1995-12-17T10:24:00.000Z'),
-    \\"numbers\\":[NaN,Infinity,-Infinity,-0],
-    \\"void\\":undefined
+  otherTypes: {
+    undefined: undefined,
+    error: new Error('bad'),
+    regexp: new RegExp('.*\\\\\\\\n', 'g'),
+    symbol: Symbol('Waddams'),
+    map: new Map([[ 'key1', 'value1' ],[ 'key2', 'value2' ]]),
+    set: new Set([1,2,3]),
+    date: new Date('1995-12-17T10:24:00.000Z'),
+    numbers: [ NaN, Infinity, -Infinity, -0 ],
+    void: undefined
   },
-  \\"objects\\":{
-    \\"foo\\":{\\"value\\":'Hello',\\"_value\\":'World'},
-    \\"bar\\":{\\"value\\":'Hello',\\"_value\\":'World'}
+  objects: {
+    foo: { value: 'Hello', _value: 'World' },
+    bar: { value: 'Hello', _value: 'World' }
   },
-  \\"deep\\":{\\"a\\":{\\"b\\":{\\"c\\":{\\"d\\":{\\"e\\":[{\\"f\\":[]}]}}}}},
-  \\"weird\\":{\\"a\\\\t\\\\n\\\\n\\\\tb\\":'value'}
+  deep: { a: { b: { c: { d: { e: [ { f: [ ] } ] } } } } },
+  weird: { a\\\\t\\\\n\\\\n\\\\tb: 'value' }
 }"
 `;
 

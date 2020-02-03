@@ -329,11 +329,11 @@ export const setMap = (_options: any, _root: any, g: any) => (
 ) => {
   if (s instanceof Map) {
     const arr = Array.from(s).map((x, i) => g(x, p.concat([i])));
-    return `new Map(\n[${arr}]\n)`;
+    return `new Map([${arr}])`;
   }
   if (s instanceof Set) {
     const arr = Array.from(s).map((x, i) => g(x, p.concat([i])));
-    return `new Set(\n[${arr}]\n)`;
+    return `new Set([${arr}])`;
   }
   return s;
 };

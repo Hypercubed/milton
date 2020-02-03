@@ -190,6 +190,27 @@ describe('json', () => {
   test('snapshot', () => {
     expect(milton.stringify(obj)).toMatchSnapshot();
   });
+
+  test('valid JSON', () => {
+    const o = {
+      str: 'string',
+      num: 3.14,
+      nul: null,
+      arr: [1, 2, 3],
+      map: {
+        x: 1,
+        y: 2,
+        z: 3
+      },
+      b: {
+        false: false,
+        true: true
+      }
+    };
+
+    const s = milton.stringify(o);
+    expect(JSON.parse(s)).toEqual(o);
+  });
 });
 
 describe('js objects', () => {
@@ -220,9 +241,9 @@ describe('js objects', () => {
   });
 
   test('arrays', () => {
-    expect(milton.stringify([])).toBe(JSON.stringify([], undefined, 2));
-    expect(milton.stringify(['Hello', 3.14])).toBe(`['Hello',3.14]`);
-    expect(milton.stringify([['Hello'], 3.14])).toBe(`[['Hello'],3.14]`);
+    expect(milton.stringify([])).toBe(`[ ]`);
+    expect(milton.stringify(['Hello', 3.14])).toBe(`[ 'Hello', 3.14 ]`);
+    expect(milton.stringify([['Hello'], 3.14])).toBe(`[ [ 'Hello' ], 3.14 ]`);
 
     expect(milton.stringify(bigarray)).toBe(
       JSON.stringify(bigarray, undefined, 2)
@@ -230,16 +251,10 @@ describe('js objects', () => {
   });
 
   test('objects', () => {
-    expect(milton.stringify({})).toBe(JSON.stringify({}));
-    expect(milton.stringify({ Hello: 3.14 })).toBe(
-      JSON.stringify({ Hello: 3.14 })
-    );
-    expect(milton.stringify({ Hello: { pi: 3.14 } })).toBe(
-      JSON.stringify({ Hello: { pi: 3.14 } })
-    );
-    expect(milton.stringify({ Hello: [3.14] })).toBe(
-      JSON.stringify({ Hello: [3.14] })
-    );
+    expect(milton.stringify({})).toBe(`{ }`);
+    expect(milton.stringify({ Hello: 3.14 })).toBe(`{ Hello: 3.14 }`);
+    expect(milton.stringify({ Hello: { pi: 3.14 } })).toBe(`{ Hello: { pi: 3.14 } }`);
+    expect(milton.stringify({ Hello: [3.14] })).toBe(`{ Hello: [ 3.14 ] }`);
   });
 
   test('js objects', () => {
@@ -258,7 +273,7 @@ describe('js objects', () => {
           ['key2', 'value2']
         ])
       )
-    ).toBe(`new Map([['key1','value1'],['key2','value2']])`);
+    ).toBe(`new Map([[ 'key1', 'value1' ],[ 'key2', 'value2' ]])`);
   });
 
   test('long arrays', () => {
@@ -269,6 +284,40 @@ describe('js objects', () => {
 
   test('snapshot', () => {
     expect(milton.stringify(obj)).toMatchSnapshot();
+  });
+
+  test('valid JS', () => {
+    const o = {
+      prims: {
+        str: 'string',
+        num: 3.14,
+        nul: null,
+        false: false,
+        true: true,
+        u: undefined      
+      },
+      i: {
+        Infinity,
+        n: -Infinity,
+        z: -0,
+        b: 123n
+      },
+      arr: [1, 2, 3],
+      map: {
+        x: 1,
+        y: 2,
+        z: 3
+      },
+      r: /.*/g,
+      d: new Date(),
+      e: new Error('bad'),
+      m: new Map([['a', 1], ['b', 2]]),
+      s: new Set(['a', 1, 'b', 2])
+    };
+
+    const s = milton.stringify(o);
+    // tslint:disable-next-line: tsr-detect-eval-with-expression no-eval
+    expect(eval(`(${s})`)).toEqual(o);
   });
 });
 
