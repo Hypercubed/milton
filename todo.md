@@ -1,9 +1,7 @@
 # TODO:
-
 - [ ] use `process.stdout.columns` as defualt when possible
 - [ ] colorize keys?
 - [ ] test `blockXSS`
-- [ ] sparse array? (`[ 1, <1 empty item>, 3, <1 empty item>, 5 ]`)
 - [ ] `Buffer`? (`<Buffer 48 65 6c 6c 6f>`)
 - [ ] inspect symbol (`Milton.inspect`)?
 - [ ] boxed objects? (`new Number(XXX)`, `[Number: XXX]`)
@@ -14,9 +12,8 @@
 - [ ] error: `Error: bad at <anonymous>:28:12` ?
 - [ ] toHumanReadableAnsi?
 - [ ] plugin helpers (see https://github.com/twada/stringifier/blob/master/strategies.js)
-- [ ] check other keys (i.e. `foo-bar` -> `"foo-bar"`) `/^[a-z$_][a-z$_0-9]*$/i`
 - [ ] Plugin to align object keys?
-- [ ] `memoize` plugin?
+- [?] `memoize` plugin?
 - [ ] `lineSeparator` option?
 
 ## Optimization
@@ -28,11 +25,11 @@
 
 ## js preset
   - [ ] long strings (`"sdfsdf" + \n + "sadfsdf"`)
-  - [ ] Well known objects (i.e. `global` -> `(0,eval)('this')`)
+  - [ ] Well known objects (i.e. `window` -> `(0,eval)('this')`)
 
 ## pretty preset
   - [ ] very long bigint?
-  - [ ] Well known objects (i.e. `global` -> `[global]`)
+  - [ ] Well known objects (i.e. `window` -> `[global]`)
 
 ## objectDecender
   - [ ] test comma option

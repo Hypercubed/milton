@@ -8,7 +8,6 @@ import {
   prettyErrors,
   prettyRegex,
   prettyDates,
-  maxArrayLength,
   maxDepth,
   reference,
   skipPrivate,
@@ -53,8 +52,8 @@ export function js(_: Milton) {
   _.add(regexp);
   _.add(setMap);
 
-  _.add(arrayDecender);
-  _.add(objectDecender, { quote: false, compact: false });
+  _.add(arrayDecender, { sparse: true });
+  _.add(objectDecender, { quote: `'`, quoteKeys: false, compact: false });
 
   _.add(jsonCatch);
 
@@ -79,14 +78,13 @@ export function pretty(_: Milton) {
   _.add(prettySetMap);
   _.add(promises);
 
-  _.add(arrayDecender);
-  _.add(objectDecender, { quoteKeys: false, compact: false });
+  _.add(arrayDecender, { maxLength: 20, sparse: true });
+  _.add(objectDecender, { quote: `'`, quoteKeys: false, compact: false });
 
   _.add(classes);
   _.add(objectToString);
 
   _.add(trimStrings);
-  _.add(maxArrayLength, { max: 20 });
   _.add(maxDepth);
   _.add(indent);
   _.add(breakLength, { compact: false });

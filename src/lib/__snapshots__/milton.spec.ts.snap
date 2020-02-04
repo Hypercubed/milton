@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`js objects snapshot 1`] = `
+exports[`js Preset snapshot 1`] = `
 "{
   json: {
     null: null,
@@ -137,11 +137,11 @@ exports[`js objects snapshot 1`] = `
     bar: { value: 'Hello', _value: 'World' }
   },
   deep: { a: { b: { c: { d: { e: [ { f: [ ] } ] } } } } },
-  weird: { a\\\\t\\\\n\\\\n\\\\tb: 'value' }
+  weird: { 'a\\\\t\\\\n\\\\n\\\\tb': 'value', 'a-b': 'value2' }
 }"
 `;
 
-exports[`json snapshot 1`] = `
+exports[`json Preset snapshot 1`] = `
 "{
   \\"json\\":{
     \\"null\\":null,
@@ -275,70 +275,11 @@ exports[`json snapshot 1`] = `
     \\"bar\\":{\\"value\\":\\"Hello\\",\\"_value\\":\\"World\\"}
   },
   \\"deep\\":{\\"a\\":{\\"b\\":{\\"c\\":{\\"d\\":{\\"e\\":[{\\"f\\":[]}]}}}}},
-  \\"weird\\":{\\"a\\\\t\\\\n\\\\n\\\\tb\\":\\"value\\"}
+  \\"weird\\":{\\"a\\\\t\\\\n\\\\n\\\\tb\\":\\"value\\",\\"a-b\\":\\"value2\\"}
 }"
 `;
 
-exports[`pretty snapshot 1`] = `
-"{
-  json: {
-    null: null,
-    integer: 1580349408812,
-    float: 0.4852754432812123,
-    strings: {
-      empty: '',
-      string: 'foo',
-      multiline: '\\\\n        This\\\\n        is\\\\n        multiline\\\\n      ',
-      longText: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent fer ... us dolor.'
-    },
-    arrays: {
-      empty: [ ],
-      array: [ 'one', 'two', 'three' ],
-      bigarray: [
-        0,
-        1.1,
-        2.2,
-        3.3000000000000003,
-        4.4,
-        5.5,
-        6.6000000000000005,
-        7.700000000000001,
-        8.8,
-        9.9,
-        11,
-        12.100000000000001,
-        13.200000000000001,
-        14.3,
-        15.400000000000002,
-        16.5,
-        17.6,
-        18.700000000000003,
-        19.8,
-        ...
-      ]
-    },
-    nested: { hello: 'hapi' },
-    booleans: { false: false, true: true }
-  },
-  otherTypes: {
-    undefined: undefined,
-    error: Error: bad,
-    regexp: /.*\\\\n/g,
-    symbol: Symbol(Waddams),
-    function: [ƒ Yes],
-    map: Map(2) { key1 => 'value1', key2 => 'value2' },
-    set: Set(3) { 1, 2, 3 },
-    date: Sun Dec 17 1995 03:24:00 GMT-0700 (Mountain Standard Time),
-    numbers: [ NaN, Infinity, -Infinity, -0 ],
-    void: undefined
-  },
-  objects: { Foo: [class: Foo], foo: Foo { value: 'Hello' }, bar: World },
-  deep: { a: { b: { c: {...} } } },
-  weird: { \\"a\\\\t\\\\n\\\\n\\\\tb\\": 'value' }
-}"
-`;
-
-exports[`prettyColors snapshot 1`] = `
+exports[`pretty Preset + Colors snapshot 1`] = `
 "[1m[37m{[39m[22m
 [1m[37m  json: [1m[37m{[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m  null: [1m[31mnull[39m[37m[37m[22m[1m[1m,[39m[37m[22m[1m[39m[22m
@@ -373,6 +314,7 @@ exports[`prettyColors snapshot 1`] = `
 [1m[37m  [1m[37m  [1m[37m    [1m[34m17.6[39m[37m[37m[37m[22m[1m[1m[1m,[39m[37m[37m[22m[1m[1m[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m  [1m[37m    [1m[34m18.700000000000003[39m[37m[37m[37m[22m[1m[1m[1m,[39m[37m[37m[22m[1m[1m[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m  [1m[37m    [1m[34m19.8[39m[37m[37m[37m[22m[1m[1m[1m,[39m[37m[37m[22m[1m[1m[39m[37m[22m[1m[39m[22m
+[1m[37m  [1m[37m  [1m[37m    [1m[34m20.900000000000002[39m[37m[37m[37m[22m[1m[1m[1m,[39m[37m[37m[22m[1m[1m[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m  [1m[37m    ...[39m[37m[37m[22m[1m[1m[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m  [1m[37m  ][39m[37m[37m[22m[1m[1m[39m[37m[22m[1m[39m[22m
 [1m[37m  [1m[37m  [1m[37m}[39m[37m[37m[22m[1m[1m,[39m[37m[22m[1m[39m[22m
@@ -393,6 +335,66 @@ exports[`prettyColors snapshot 1`] = `
 [1m[37m  [1m[37m}[39m[37m[22m[1m,[39m[22m
 [1m[37m  objects: [1m[37m{ Foo: [36m[class: Foo][39m[37m[37m, foo: Foo { value: [33m'Hello'[39m[37m[37m }, bar: World }[39m[37m[22m[1m,[39m[22m
 [1m[37m  deep: [1m[37m{ a: [1m[37m{ b: [1m[37m{ c: [1m[37m{...}[39m[37m[37m[37m[37m[22m[1m[1m[1m[1m }[39m[37m[37m[37m[22m[1m[1m[1m }[39m[37m[37m[22m[1m[1m }[39m[37m[22m[1m,[39m[22m
-[1m[37m  weird: [1m[37m{ \\"a\\\\t\\\\n\\\\n\\\\tb\\": [33m'value'[39m[37m[37m }[39m[37m[22m[1m[39m[22m
+[1m[37m  weird: [1m[37m{ 'a\\\\t\\\\n\\\\n\\\\tb': [33m'value'[39m[37m[37m, 'a-b': [33m'value2'[39m[37m[37m }[39m[37m[22m[1m[39m[22m
 [1m[37m}[39m[22m"
+`;
+
+exports[`pretty Preset snapshot 1`] = `
+"{
+  json: {
+    null: null,
+    integer: 1580349408812,
+    float: 0.4852754432812123,
+    strings: {
+      empty: '',
+      string: 'foo',
+      multiline: '\\\\n        This\\\\n        is\\\\n        multiline\\\\n      ',
+      longText: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent fer ... us dolor.'
+    },
+    arrays: {
+      empty: [ ],
+      array: [ 'one', 'two', 'three' ],
+      bigarray: [
+        0,
+        1.1,
+        2.2,
+        3.3000000000000003,
+        4.4,
+        5.5,
+        6.6000000000000005,
+        7.700000000000001,
+        8.8,
+        9.9,
+        11,
+        12.100000000000001,
+        13.200000000000001,
+        14.3,
+        15.400000000000002,
+        16.5,
+        17.6,
+        18.700000000000003,
+        19.8,
+        20.900000000000002,
+        ...
+      ]
+    },
+    nested: { hello: 'hapi' },
+    booleans: { false: false, true: true }
+  },
+  otherTypes: {
+    undefined: undefined,
+    error: Error: bad,
+    regexp: /.*\\\\n/g,
+    symbol: Symbol(Waddams),
+    function: [ƒ Yes],
+    map: Map(2) { key1 => 'value1', key2 => 'value2' },
+    set: Set(3) { 1, 2, 3 },
+    date: Sun Dec 17 1995 03:24:00 GMT-0700 (Mountain Standard Time),
+    numbers: [ NaN, Infinity, -Infinity, -0 ],
+    void: undefined
+  },
+  objects: { Foo: [class: Foo], foo: Foo { value: 'Hello' }, bar: World },
+  deep: { a: { b: { c: {...} } } },
+  weird: { 'a\\\\t\\\\n\\\\n\\\\tb': 'value', 'a-b': 'value2' }
+}"
 `;

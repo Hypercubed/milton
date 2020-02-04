@@ -2,7 +2,7 @@ import Chalk from 'chalk';
 
 // tslint:disable:no-expression-statement
 import { Milton } from './milton';
-import { ansiColors, arrayDecender, breakLength } from './plugins';
+import { ansiColors, arrayDecender, breakLength, jsValues, jsonValues } from './plugins';
 import { json, js, pretty } from './presets';
 
 const longText =
@@ -104,7 +104,8 @@ const obj: any = {
     }
   },
   weird: {
-    'a\t\n\n\tb': 'value'
+    'a\t\n\n\tb': 'value',
+    'a-b': 'value2'
   }
 };
 
@@ -115,7 +116,7 @@ test('milton thows without plugins', () => {
   }).toThrow('PC LOAD LETTER');
 });
 
-describe('json', () => {
+describe('json Preset', () => {
   const milton = new Milton();
   milton.use(json);
 
@@ -136,6 +137,19 @@ describe('json', () => {
     );
     expect(milton.stringify([['Hello'], 3.14])).toBe(
       JSON.stringify([['Hello'], 3.14])
+    );
+    expect(milton.stringify([1, 2, 3])).toBe(
+      JSON.stringify([1, 2, 3])
+    );
+    // tslint:disable-next-line: no-sparse-arrays
+    expect(milton.stringify([1, , 3])).toBe(
+      // tslint:disable-next-line: no-sparse-arrays
+      JSON.stringify([1, , 3])
+    );
+
+    expect(milton.stringify([1, null, 3])).toBe(
+      // tslint:disable-next-line: no-sparse-arrays
+      JSON.stringify([1, , 3])
     );
 
     expect(milton.stringify(bigarray)).toBe(
@@ -197,6 +211,8 @@ describe('json', () => {
       num: 3.14,
       nul: null,
       arr: [1, 2, 3],
+      // tslint:disable-next-line: no-sparse-arrays
+      arr2: [ 1, null, 3],
       map: {
         x: 1,
         y: 2,
@@ -213,7 +229,7 @@ describe('json', () => {
   });
 });
 
-describe('js objects', () => {
+describe('js Preset', () => {
   const milton = new Milton();
   milton.use(js);
 
@@ -240,46 +256,60 @@ describe('js objects', () => {
     );
   });
 
-  test('arrays', () => {
-    expect(milton.stringify([])).toBe(`[ ]`);
-    expect(milton.stringify(['Hello', 3.14])).toBe(`[ 'Hello', 3.14 ]`);
-    expect(milton.stringify([['Hello'], 3.14])).toBe(`[ [ 'Hello' ], 3.14 ]`);
+  describe('arrays', () => {
+    test('simple', () => {
+      expect(milton.stringify([])).toBe(`[ ]`);
+      expect(milton.stringify(['Hello', 3.14])).toBe(`[ 'Hello', 3.14 ]`);
+      expect(milton.stringify([['Hello'], 3.14])).toBe(`[ [ 'Hello' ], 3.14 ]`);
+    });
 
-    expect(milton.stringify(bigarray)).toBe(
-      JSON.stringify(bigarray, undefined, 2)
-    );
+    test('holes', () => {
+      expect(milton.stringify([1, 2, 3])).toBe(`[ 1, 2, 3 ]`);
+      // tslint:disable-next-line: no-sparse-arrays
+      expect(milton.stringify([1, , 3])).toBe(`[ 1, , 3 ]`);
+      expect(milton.stringify([1, null, 3])).toBe(`[ 1, null, 3 ]`);
+      expect(milton.stringify([1, undefined, 3])).toBe(`[ 1, undefined, 3 ]`);
+    });
+
+    test('big', () => {
+      expect(milton.stringify(bigarray)).toBe(
+        JSON.stringify(bigarray, undefined, 2)
+      );
+    });
   });
 
-  test('objects', () => {
-    expect(milton.stringify({})).toBe(`{ }`);
-    expect(milton.stringify({ Hello: 3.14 })).toBe(`{ Hello: 3.14 }`);
-    expect(milton.stringify({ Hello: { pi: 3.14 } })).toBe(`{ Hello: { pi: 3.14 } }`);
-    expect(milton.stringify({ Hello: [3.14] })).toBe(`{ Hello: [ 3.14 ] }`);
-  });
+  describe('objects', () => {
+    test('simple', () => {
+      expect(milton.stringify({})).toBe(`{ }`);
+      expect(milton.stringify({ Hello: 3.14 })).toBe(`{ Hello: 3.14 }`);
+      expect(milton.stringify({ Hello: { pi: 3.14 } })).toBe(`{ Hello: { pi: 3.14 } }`);
+      expect(milton.stringify({ Hello: [3.14] })).toBe(`{ Hello: [ 3.14 ] }`);
+    });
 
-  test('js objects', () => {
-    expect(milton.stringify(new Date('1995-12-17T03:24:00'))).toBe(
-      `new Date('1995-12-17T10:24:00.000Z')`
-    );
-    expect(milton.stringify(/\.*/g)).toBe(`new RegExp('\\\\.*', 'g')`);
-    expect(milton.stringify(Symbol('Milton'))).toBe(`Symbol('Milton')`);
-    // expect(milton.stringify(function yes() { return true; })).toBe(`[ƒ: yes]`);
-    expect(milton.stringify(new Error('bad'))).toBe(`new Error('bad')`);
-    expect(milton.stringify(new Set([1, 2, 3]))).toBe(`new Set([1,2,3])`);
-    expect(
-      milton.stringify(
-        new Map([
-          ['key1', 'value1'],
-          ['key2', 'value2']
-        ])
-      )
-    ).toBe(`new Map([[ 'key1', 'value1' ],[ 'key2', 'value2' ]])`);
-  });
+    test('odd keys', () => {
+      expect(milton.stringify({ 'He-llo': 3.14 })).toBe(`{ 'He-llo': 3.14 }`);
+      expect(milton.stringify({ 'He llo': 3.14 })).toBe(`{ 'He llo': 3.14 }`);
+      expect(milton.stringify({ 'He\tllo': 3.14 })).toBe(`{ 'He\\tllo': 3.14 }`);
+    });
 
-  test('long arrays', () => {
-    expect(milton.stringify(bigarray)).toBe(
-      JSON.stringify(bigarray, undefined, 2)
-    );
+    test('js objects', () => {
+      expect(milton.stringify(new Date('1995-12-17T03:24:00'))).toBe(
+        `new Date('1995-12-17T10:24:00.000Z')`
+      );
+      expect(milton.stringify(/\.*/g)).toBe(`new RegExp('\\\\.*', 'g')`);
+      expect(milton.stringify(Symbol('Milton'))).toBe(`Symbol('Milton')`);
+      // expect(milton.stringify(function yes() { return true; })).toBe(`[ƒ: yes]`);
+      expect(milton.stringify(new Error('bad'))).toBe(`new Error('bad')`);
+      expect(milton.stringify(new Set([1, 2, 3]))).toBe(`new Set([1,2,3])`);
+      expect(
+        milton.stringify(
+          new Map([
+            ['key1', 'value1'],
+            ['key2', 'value2']
+          ])
+        )
+      ).toBe(`new Map([[ 'key1', 'value1' ],[ 'key2', 'value2' ]])`);
+    });
   });
 
   test('snapshot', () => {
@@ -303,6 +333,8 @@ describe('js objects', () => {
         b: 123n
       },
       arr: [1, 2, 3],
+      // tslint:disable-next-line: no-sparse-arrays
+      arr2: [1, , 3],
       map: {
         x: 1,
         y: 2,
@@ -321,7 +353,7 @@ describe('js objects', () => {
   });
 });
 
-describe('pretty', () => {
+describe('pretty Preset', () => {
   const milton = new Milton();
   milton.use(pretty);
 
@@ -350,10 +382,20 @@ describe('pretty', () => {
     );
   });
 
-  test('arrays', () => {
-    expect(milton.stringify([])).toBe(`[ ]`);
-    expect(milton.stringify(['Hello', 3.14])).toBe(`[ 'Hello', 3.14 ]`);
-    expect(milton.stringify([['Hello'], 3.14])).toBe(`[ [ 'Hello' ], 3.14 ]`);
+  describe('arrays', () => {
+    test('simple', () => {
+      expect(milton.stringify([])).toBe(`[ ]`);
+      expect(milton.stringify(['Hello', 3.14])).toBe(`[ 'Hello', 3.14 ]`);
+      expect(milton.stringify([['Hello'], 3.14])).toBe(`[ [ 'Hello' ], 3.14 ]`);      
+    });
+
+    test('holes', () => {
+      expect(milton.stringify([1, 2, 3])).toBe(`[ 1, 2, 3 ]`);
+      // tslint:disable-next-line: no-sparse-arrays
+      expect(milton.stringify([1, , 3])).toBe(`[ 1, , 3 ]`);
+      expect(milton.stringify([1, null, 3])).toBe(`[ 1, null, 3 ]`);
+      expect(milton.stringify([1, undefined, 3])).toBe(`[ 1, undefined, 3 ]`);
+    });
   });
 
   test('objects', () => {
@@ -420,7 +462,7 @@ describe('pretty', () => {
   });
 
   test('more and depth', () => {
-    const s = '[\n  ' + bigarray.slice(0, 19).join(',\n  ') + ',\n  ...\n]';
+    const s = '[\n  ' + bigarray.slice(0, 20).join(',\n  ') + ',\n  ...\n]';
     expect(milton.stringify(bigarray)).toBe(s);
 
     const deep = {
@@ -444,7 +486,7 @@ describe('pretty', () => {
   });
 });
 
-describe('prettyColors', () => {
+describe('pretty Preset + Colors', () => {
   const milton = new Milton();
   milton.use(pretty);
   milton.add(ansiColors);
@@ -508,12 +550,49 @@ describe('prettyColors', () => {
 });
 
 describe('arrayDecender', () => {
+  test('brackets and comma', () => {
+    // tslint:disable-next-line: no-shadowed-variable
+    const m = new Milton();
+
+    m.add(arrayDecender, { comma: false, brackets: '[]', maxLength: 5 });
+    m.add(breakLength, { compact: false });
+    
+    expect(m.stringify([1, 2, 3])).toBe('[ 1 2 3 ]');
+  });
+
   const m = new Milton();
 
-  m.add(arrayDecender, { comma: false, brackets: '[]' });
+  m.add(jsValues);
+  m.add(jsonValues, { quote: `'` });
+  
+  m.add(arrayDecender, { sparse: true, comma: true, brackets: '[]', maxLength: 5 });
   m.add(breakLength, { compact: false });
 
-  expect(m.stringify([1, 2, 3])).toBe('[ 1 2 3 ]');
+  const arr2 = Array.from({ length: 2 }).map((_k, i) => i + 1);
+  const arr5 = Array.from({ length: 5 }).map((_k, i) => i + 1);
+  const arr10 = Array.from({ length: 10 }).map((_k, i) => i + 1);
+
+  test('max length single array', () => {
+    expect(m.stringify(arr2)).toBe('[ 1, 2 ]');
+    expect(m.stringify(arr5)).toBe('[ 1, 2, 3, 4, 5 ]');
+    expect(m.stringify(arr10)).toBe('[ 1, 2, 3, 4, 5, ... ]');
+  });
+
+  test('max length single arrays', () => {
+    expect(m.stringify([arr2])).toBe('[ [ 1, 2 ] ]');
+    expect(m.stringify([arr5])).toBe('[ [ 1, 2, 3, 4, 5 ] ]');
+    expect(m.stringify([arr10])).toBe('[ [ 1, 2, 3, 4, 5, ... ] ]');
+
+    expect(m.stringify([...arr2, arr5])).toBe('[ 1, 2, [ 1, 2, 3, 4, 5 ] ]');
+    expect(m.stringify([...arr2, arr10])).toBe('[ 1, 2, [ 1, 2, 3, 4, 5, ... ] ]');
+    expect(m.stringify([arr10, arr10])).toBe('[ [ 1, 2, 3, 4, 5, ... ], [ 1, 2, 3, 4, 5, ... ] ]');
+  });
+
+  test('sparse arrays', () => {
+    expect(m.stringify([1, 2, 3])).toBe('[ 1, 2, 3 ]');
+    // tslint:disable-next-line: no-sparse-arrays
+    expect(m.stringify([1, , 3])).toBe('[ 1, , 3 ]');
+  });
 });
 
 describe('breakLength', () => {
@@ -522,8 +601,10 @@ describe('breakLength', () => {
   m.add(arrayDecender, { comma: true, brackets: '[]' });
   m.add(breakLength, { compact: false, breakLength: 15 });
 
-  expect(m.stringify([1, 2, 3])).toBe('[ 1, 2, 3 ]');
-  expect(m.stringify([1, 2, 3, 4, 5])).toBe('[\n1,\n2,\n3,\n4,\n5\n]');
+  test('break', () => {
+    expect(m.stringify([1, 2, 3])).toBe('[ 1, 2, 3 ]');
+    expect(m.stringify([1, 2, 3, 4, 5])).toBe('[\n1,\n2,\n3,\n4,\n5\n]');    
+  });
 });
 
 describe('colorize', () => {
@@ -531,7 +612,9 @@ describe('colorize', () => {
 
   m.add(ansiColors, { number: 'unknown.style' });
 
-  expect(() => {
-    m.stringify(123);
-  }).toThrow('Unknown Chalk style: unknown.style');
+  test('unknown color', () => {
+    expect(() => {
+      m.stringify(123);
+    }).toThrow('Unknown Chalk style: unknown.style');    
+  });
 });

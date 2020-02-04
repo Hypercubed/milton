@@ -63,6 +63,9 @@ function indentOption(s: boolean | string | number) {
   return s;
 }
 
+// @ts-ignore
+const DEFAULT_WIDTH = /* (process && process.stdout && process.stdout.columns) || */ 80;
+
 // PLUGINS
 
 const JSON_OPTIONS = {
@@ -118,7 +121,9 @@ export const jsonCatch = (_options: Partial<typeof JSON_OPTIONS>) => {
 
 const ARRAY_DECENDER_OPTIONS = {
   comma: true,
-  brackets: '[]'
+  brackets: '[]',
+  maxLength: Infinity,
+  sparse: false
 };
 
 export const arrayDecender = (
@@ -141,10 +146,17 @@ export const arrayDecender = (
       seen.push(s);
 
       const acc = [];
-      for (const key in s) {
-        if (hasOwnProperty.call(s, key)) {
-          const v = get(s[key], path.concat([key]));
-          if (v) acc.push(v);
+      
+      for (let i = 0; i < s.length; i++) {
+        if (i > options.maxLength - 1) {
+          acc.push('...');
+          break;
+        }
+        if (i in s) { // not a hole
+          const v = get(s[i], path.concat([i]));
+          if (v) acc.push(v);    
+        } else {
+          acc.push(options.sparse ? '' : 'null');
         }
       }
       seen.pop();
@@ -159,7 +171,7 @@ const OBJECT_DECENDER_OPTIONS = {
   brackets: '{}',
   quoteKeys: true,
   compact: true,
-  quote: '"'
+  quote: `"`
 };
 
 export const objectDecender = (
@@ -190,7 +202,7 @@ export const objectDecender = (
           key = String(key);
           const esc = escape(String(key));
           key =
-            esc !== key || options.quoteKeys
+            esc !== key || options.quoteKeys || !(/^[a-zA-Z_$][0-9a-zA-Z_$]*$/.test(key))
               ? `${options.quote}${esc}${options.quote}`
               : key;
           if (v) acc.push(key + keySeperator + v);
@@ -225,7 +237,7 @@ export const indent = (_options: Partial<typeof INDENT_OPTIONS>) => {
 
 const BREAK_OPTIONS = {
   compact: true,
-  breakLength: 80
+  breakLength: DEFAULT_WIDTH
 };
 
 export const breakLength = (_options: Partial<typeof BREAK_OPTIONS>) => {
@@ -492,7 +504,7 @@ const MAX_ARRAY_OPTIONS = {
   show: null as any
 };
 
-// Typed arrays, sets
+// deprecate
 export const maxArrayLength = (_options: Partial<typeof MAX_ARRAY_OPTIONS>) => {
   const options = { ...MAX_ARRAY_OPTIONS, ..._options };
   options.show = options.show || options.max;
@@ -500,8 +512,8 @@ export const maxArrayLength = (_options: Partial<typeof MAX_ARRAY_OPTIONS>) => {
     const t = toString.call(v);
     if (t === '[object Array]') {
       const sp = s.split('\n');
-      if (sp.length > options.max) {
-        const f = sp.splice(0, options.show).join('\n');
+      if (sp.length > options.max + 2) {
+        const f = sp.splice(0, options.show + 1).join('\n');
         const e = sp.pop();
         const l = sp.pop();
         const ll = l ? l.split(/\S/)[0] : '';
@@ -528,7 +540,7 @@ export const blockXSS = () => {
 };
 
 const TRIM_STRING_OPTIONS = {
-  max: 80,
+  max: DEFAULT_WIDTH,
   show: [70, 10],
   snip: ' ... '
 };
