@@ -332,9 +332,11 @@ describe('js Preset', () => {
         z: -0,
         b: 123n
       },
-      arr: [1, 2, 3],
-      // tslint:disable-next-line: no-sparse-arrays
-      arr2: [1, , 3],
+      arrays: {
+        arr: [1, 2, 3],
+        // tslint:disable-next-line: no-sparse-arrays
+        arr2: [1, , 3],        
+      },
       map: {
         x: 1,
         y: 2,
@@ -344,7 +346,8 @@ describe('js Preset', () => {
       d: new Date(),
       e: new Error('bad'),
       m: new Map([['a', 1], ['b', 2]]),
-      s: new Set(['a', 1, 'b', 2])
+      s: new Set(['a', 1, 'b', 2]),
+      n: Number(10)
     };
 
     const s = milton.stringify(o);
@@ -361,7 +364,7 @@ describe('pretty Preset', () => {
     expect(milton.stringify('')).toBe(`''`);
     expect(milton.stringify('Hello')).toBe(`'Hello'`);
     expect(milton.stringify(longText)).toBe(
-      `'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent fer ... us dolor.'`
+      `'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesen ... us dolor.'`
     );
     expect(milton.stringify(3.14)).toBe(`3.14`);
     expect(milton.stringify(true)).toBe(`true`);
@@ -496,7 +499,7 @@ describe('pretty Preset + Colors', () => {
     expect(milton.stringify('Hello')).toBe(Chalk.yellow(`'Hello'`));
     expect(milton.stringify(longText)).toBe(
       Chalk.yellow(
-        `'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent fer ... us dolor.'`
+        `'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesen ... us dolor.'`
       )
     );
     expect(milton.stringify(3.14)).toBe(Chalk.bold.blue(`3.14`));

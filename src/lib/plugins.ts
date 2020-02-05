@@ -2,6 +2,7 @@ import jsonpointer from 'json-pointer';
 import stripAnsi from 'strip-ansi';
 import Chalk from 'chalk';
 import typeName from 'type-name';
+import ellipsisify from '@sensorfactdev/ellipsisify';
 
 export type Class<T = unknown> = new (...args: any[]) => T;
 export type Path = (string | number)[];
@@ -63,8 +64,14 @@ function indentOption(s: boolean | string | number) {
   return s;
 }
 
-// @ts-ignore
-const DEFAULT_WIDTH = /* (process && process.stdout && process.stdout.columns) || */ 80;
+function getDefaultWidth() {
+  // @ts-ignore
+  if (process && process.stdout && process.env.NODE_ENV !== 'test') {
+    // @ts-ignore
+    return process.stdout.columns || 80;
+  }
+  return 80;
+}
 
 // PLUGINS
 
@@ -237,11 +244,12 @@ export const indent = (_options: Partial<typeof INDENT_OPTIONS>) => {
 
 const BREAK_OPTIONS = {
   compact: true,
-  breakLength: DEFAULT_WIDTH
+  breakLength: undefined as any
 };
 
 export const breakLength = (_options: Partial<typeof BREAK_OPTIONS>) => {
   const options = { ...BREAK_OPTIONS, ..._options };
+  options.breakLength = options.breakLength || getDefaultWidth();
   const replaceValue = options.compact ? '' : ' ';
   return (s: any) => {
     if (typeof s === 'string') {
@@ -540,23 +548,30 @@ export const blockXSS = () => {
 };
 
 const TRIM_STRING_OPTIONS = {
-  max: DEFAULT_WIDTH,
-  show: [70, 10],
-  snip: ' ... '
+  max: undefined as any,
+  show: undefined as any,
+  snip: ' ... ',
+  cutoff: undefined as any,
+  remain: undefined as any,
+  ellipsis: undefined as any,
 };
 
 export const trimStrings = (_options: Partial<typeof TRIM_STRING_OPTIONS>) => {
   const options = { ...TRIM_STRING_OPTIONS, ..._options };
-  options.show = options.show || options.max;
+  options.max = options.max || getDefaultWidth();
+  
+  // v1 compat, remove in v2
+  options.ellipsis = options.ellipsis || options.snip;
+  options.cutoff = options.cutoff || (options.show && options.show[0]) || options.max - 10 - options.snip.length;
+  options.remain = options.remain || (options.show && options.show[1]) || 10;
+
   return (s: any, _p: Path, v: any) => {
     if (
       typeof v === 'string' &&
       typeof s === 'string' &&
       s.length > options.max
     ) {
-      return (
-        s.slice(0, options.show[0]) + options.snip + s.slice(-options.show[1])
-      );
+      return ellipsisify(s, options.cutoff, options.remain, options.ellipsis);
     }
     return s;
   };

@@ -20,13 +20,16 @@
     "test:lint": "tslint --project .",
     "test:unit": "jest",
     "watch": "jest --watch",
-    "bench": "npm-run-all build:* & node ./bench/json.js",
+    "prebench": "npm-run-all build:*",
+    "bench": "node ./bench/json.js",
     "doc": "run-s doc:html && open-cli build/docs/index.html",
     "doc:html": "typedoc src/ --exclude **/*.spec.ts --target ES6 --mode file --out build/docs",
     "doc:json": "typedoc src/ --exclude **/*.spec.ts --target ES6 --mode file --json build/docs/typedoc.json",
     "reset": "git clean -dfx && git reset --hard && npm i",
     "clean": "trash build test",
-    "np": "npm-run-all build:* && np --no-cleanup --yolo"
+    "prenp": "npm-run-all build:*",
+    "np": "np --no-cleanup --yolo",
+    "prepack": "npm-run-all build:*"
   },
   "scripts-info": {
     "info": "Display information about the package scripts",
@@ -43,6 +46,7 @@
     "node": ">=8.9"
   },
   "dependencies": {
+    "@sensorfactdev/ellipsisify": "^1.0.0",
     "@types/json-pointer": "^1.0.30",
     "@types/type-name": "^1.0.27",
     "chalk": "^3.0.0",

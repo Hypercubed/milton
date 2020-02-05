@@ -1,5 +1,4 @@
 # TODO:
-- [ ] use `process.stdout.columns` as defualt when possible
 - [ ] colorize keys?
 - [ ] test `blockXSS`
 - [ ] `Buffer`? (`<Buffer 48 65 6c 6c 6f>`)
@@ -10,7 +9,7 @@
 - [ ] `@@toStringTag`?  `Symbol.for('nodejs.util.inspect.custom')`?
 - [ ] sort object keys plugin?
 - [ ] error: `Error: bad at <anonymous>:28:12` ?
-- [ ] toHumanReadableAnsi?
+- [ ] toHumanReadableAnsi?  html plugin?  magicpen?
 - [ ] plugin helpers (see https://github.com/twada/stringifier/blob/master/strategies.js)
 - [ ] Plugin to align object keys?
 - [?] `memoize` plugin?
@@ -41,3 +40,7 @@
   - [ ] js version?
   - [ ] `[object GeneratorFunction]`, `[object Arguments]`?
   - [ ] Anonymous functions?
+
+## trimStrings
+  - [ ] tests for max option
+  - [ ] trim at word boundry?

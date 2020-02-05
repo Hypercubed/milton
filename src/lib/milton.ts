@@ -20,13 +20,13 @@ export class Milton {
     return _stringify(value, []);
   }
 
-  add(plugin: Plugin, options: any = null) {
+  add<T extends Plugin>(plugin: T, options?: Parameters<T>[0]) {
     this._replacers.push(plugin.bind(this, options || null));
     return this;
   }
 
-  use(preset: Preset, ...args: any[]) {
-    preset(this, ...args);
+  use<T extends Preset>(preset: T, options?: Parameters<T>[1]) {
+    preset(this, options);
     return this;
   }
 }
