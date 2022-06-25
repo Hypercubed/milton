@@ -67,7 +67,7 @@
     "stringifier": "^2.1.0",
     "stringify-object": "^3.3.0",
     "strip-ansi": "^6.0.0",
-    "trash-cli": "^3.0.0",
+    "trash-cli": "^4.0.0",
     "ts-jest": "^25.0.0",
     "tslint": "^6.0.0",
     "tslint-config-prettier": "^1.18.0",
