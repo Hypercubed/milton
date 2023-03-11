@@ -49,7 +49,7 @@
     "@sensorfactdev/ellipsisify": "^1.0.0",
     "@types/json-pointer": "^1.0.30",
     "@types/type-name": "^1.0.27",
-    "chalk": "^3.0.0",
+    "chalk": "^5.0.0",
     "json-pointer": "^0.6.0",
     "type-name": "^2.0.2"
   },
